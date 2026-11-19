@@ -2,5 +2,5 @@
 window.PP_CONFIG = {
   url: 'https://aerlqgctahmlplwhkmrk.supabase.co',
   key: 'sb_publishable_D3bsAMQ2F8KWw4f_ozeNvA_qUep1YFZ',
-  v: '2'
+  v: '3'
 };

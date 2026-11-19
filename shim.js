@@ -7,7 +7,7 @@ if (!CFG.url || !CFG.key) {
 } else {
   const sb = createClient(CFG.url, CFG.key, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
   window.__sb = sb;
-  if (/type=recovery/.test(location.hash)) window.__recovery = true;
+  if (/type=(recovery|invite)/.test(location.hash)) window.__recovery = true;
   sb.auth.onAuthStateChange((ev) => { if (ev === 'PASSWORD_RECOVERY') { window.__recovery = true; } });
   window.claude = window.__makeStore(sb);
 }

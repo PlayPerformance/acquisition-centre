@@ -54,7 +54,7 @@ const vName=v=>[v.year,v.make,v.model].filter(Boolean).join(' ')||'Untitled vehi
 const vSub=v=>[v.badge,v.series].filter(Boolean).join(' · ');
 const inits=n=>(n||'').split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('')||'•';
 const isNew=v=>v.publishedAt&&(Date.now()-v.publishedAt)<3*864e5;
-const route=()=>{const h=(location.hash||'').replace(/^#/,'');return /access_token=|error_description=|type=recovery/.test(h)?'':h};
+const route=()=>{const h=(location.hash||'').replace(/^#/,'');return /access_token=|error_description=|type=(recovery|invite)/.test(h)?'':h};
 function go(h){if(route()===h)render();else location.hash=h;window.scrollTo(0,0)}
 const link=id=>PAGE_URL+'#v-'+id;
 function saleState(v){const c=S.claims[v.id];if(c&&c.buyer)return c.buyer===S.uid?'mine':'sold';if(v.status==='sold')return S.mine[v.id]?.result==='won'?'mine':'sold';if(v.status==='draft'||v.status==='hidden')return'draft';return'available'}
@@ -396,8 +396,8 @@ function authSheet(why){
 const STATES=['QLD','NSW','VIC','SA','WA','TAS','NT','ACT'];
 function gate(){
   const m=S.gateMode||'in';
-  const head={in:'Sign in to your <span class="red">account</span>',up:'Request <span class="red">access</span>',reset:'Reset <span class="red">password</span>',newpw:'Set a new <span class="red">password</span>'}[m];
-  const sub={in:'Exclusive access to Play Performance stock at set prices.',up:'Tell us who you are to unlock our stock. First to hit Buy now gets the car.',reset:"Enter your email and we'll send you a reset link.",newpw:'Choose a new password for your account.'}[m];
+  const head={in:'Sign in to your <span class="red">account</span>',up:'Request <span class="red">access</span>',reset:'Reset <span class="red">password</span>',newpw:'Set your <span class="red">password</span>'}[m];
+  const sub={in:'Exclusive access to Play Performance stock at set prices.',up:'Tell us who you are to unlock our stock. First to hit Buy now gets the car.',reset:"Enter your email and we'll send you a reset link.",newpw:'Choose a password for your account. You will use it with your email to sign in.'}[m];
   return `<div class="gate"><div class="gbox">
     <div class="glogo">${LOGO}</div>
     <h1 class="h-x">${head}</h1><p class="gsub">${sub}</p>
