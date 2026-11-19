@@ -4,4 +4,4 @@ Mobile-first site where buyers browse Play Performance stock at set prices, hit 
 
 - Hosting: GitHub Pages (this repo)
 - Database, logins, photos: Supabase project `acquisition-centre` (Sydney)
-- `setup.sql` / `schema.sql`: database structure and security rules
+- `setup.sql`: database structure and security rules; `seed.sql`: initial stock

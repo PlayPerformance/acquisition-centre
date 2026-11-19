@@ -323,6 +323,20 @@ body.chatmode main{padding-bottom:calc(var(--nav-h) + var(--sab) + 90px)}
 .irow.unread b,.irow.unread .last{color:#fff;font-weight:700}
 @media (min-width:1000px){.composer{bottom:0}body.chatmode main{padding-bottom:110px}}
 
+/* gate */
+.gate{min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:calc(28px + var(--sat)) 20px calc(28px + var(--sab));background:radial-gradient(120% 60% at 50% 0%,#1a0606 0%,#000 60%)}
+.gbox{width:100%;max-width:400px}
+.glogo{display:flex;justify-content:center;margin-bottom:26px}
+.glogo .logo,.glogo{color:#fff}
+.glogo svg{height:56px;width:auto}
+.glogo .sub{font-family:var(--head);font-stretch:125%;font-weight:800;font-size:10px;letter-spacing:2px;line-height:1.25;border-left:2px solid var(--red);padding-left:10px;margin-left:12px;text-transform:uppercase;align-self:center}
+.gate h1{font-size:24px;margin:0 0 6px;line-height:1.15}
+.gsub{color:var(--muted);margin:0 0 20px;font-size:14.5px;line-height:1.5}
+.grow{display:flex;justify-content:space-between;align-items:center;margin-top:-4px}
+.gswitch{text-align:center;margin:18px 0 0;font-size:15px;color:var(--muted)}
+.gswitch a{color:#fff;font-weight:700}
+.gfoot{text-align:center;color:#5f676e;font-size:12px;margin-top:34px;line-height:1.6}
+
 /* sign in */
 .signin{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
 .signin .box{max-width:400px}

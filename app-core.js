@@ -54,7 +54,7 @@ const vName=v=>[v.year,v.make,v.model].filter(Boolean).join(' ')||'Untitled vehi
 const vSub=v=>[v.badge,v.series].filter(Boolean).join(' · ');
 const inits=n=>(n||'').split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('')||'•';
 const isNew=v=>v.publishedAt&&(Date.now()-v.publishedAt)<3*864e5;
-const route=()=>(location.hash||'').replace(/^#/,'');
+const route=()=>{const h=(location.hash||'').replace(/^#/,'');return /access_token=|error_description=|type=recovery/.test(h)?'':h};
 function go(h){if(route()===h)render();else location.hash=h;window.scrollTo(0,0)}
 const link=id=>PAGE_URL+'#v-'+id;
 function saleState(v){const c=S.claims[v.id];if(c&&c.buyer)return c.buyer===S.uid?'mine':'sold';if(v.status==='sold')return S.mine[v.id]?.result==='won'?'mine':'sold';if(v.status==='draft'||v.status==='hidden')return'draft';return'available'}
@@ -100,10 +100,12 @@ async function boot(){
   const timer=setTimeout(()=>{if(!S.loaded){S.loadErr='Taking a while to connect. Check your signal.';render()}},10000);
   try{const [db,user]=await Promise.all([window.claude?.use('db'),window.claude?.use('user')]);S.db=db;S.user=user}catch(e){}
   if(!S.db){clearTimeout(timer);S.noDb=true;render();return}
+  S.recovery=!!window.__recovery;if(S.recovery)S.gateMode='newpw';
   try{if(S.user){S.realAdmin=!!(await S.user.canEdit());S.uid=await S.user.id();S.me=await S.user.me()}}catch(e){}
   if(route()==='customer'){LS.set('pp-preview',1);history.replaceState(null,'',location.pathname+location.search)}
   S.isAdmin=S.realAdmin&&!LS.get('pp-preview');
   if(S.realAdmin){try{S.assets=await window.claude.use('assets')}catch(e){}}
+  S.authReady=true;if(!S.uid){render();return}
   S.db.collection('vehicles').onSnapshot(s=>{S.vehicles=s.docs.map(d=>({id:d.id,...d.data()}));if(!s.metadata.fromCache||S.vehicles.length){S.loaded=true;S.loadErr=null;clearTimeout(timer)}soft()},e=>{S.loaded=true;clearTimeout(timer);if(e.code!=='revoked')S.loadErr='Could not load vehicles.';soft()});
   S.db.collection('claims').onSnapshot(s=>{const c={};s.docs.forEach(d=>c[d.id]=d.data());S.claims=c;soft()},()=>{});
   if(S.uid){
@@ -133,12 +135,14 @@ function soft(){
 /* ================= Shell ================= */
 function render(keep){
   if(S.noDb){app.innerHTML=signIn();return}
+  if(!S.uid||S.recovery){if(!S.authReady){app.innerHTML='<div class="signin"><div class="skel" style="width:300px;height:300px"></div></div>';return}document.body.className='';app.innerHTML=gate();bindGate();return}
   const r=route();let body,mode='';
   if(r.startsWith('admin')){
     if(!S.isAdmin)body='<div class="card empty">This area is for Play Performance staff only.</div>';
     else if(r==='admin-new'){body=wizard(null);mode='wizard'}
     else if(r.startsWith('admin-edit-')){body=wizard(r.slice(11));mode='wizard'}
     else if(r.startsWith('admin-v-'))body=adminVehicle(r.slice(8));
+    else if(r==='admin-customers')body=customersPage();
     else body=adminList();
   }else if(r.startsWith('v-')){body=vehiclePage(r.slice(2));if(document.body.dataset.hasbuy==='1')mode='buybar'}
   else if(r==='saved')body=S.uid?listPage('saved'):`<h1 class="page-h h-x">Saved <span class="red">cars</span></h1><div class="card empty">Sign in to save cars to your shortlist.<br><br><button class="btn btn-red" data-act="signin">Sign in</button></div>`;
@@ -388,6 +392,57 @@ function authSheet(why){
   });
 }
 
+/* ================= Gate (sign-in first) ================= */
+const STATES=['QLD','NSW','VIC','SA','WA','TAS','NT','ACT'];
+function gate(){
+  const m=S.gateMode||'in';
+  const head={in:'Sign in to your <span class="red">account</span>',up:'Request <span class="red">access</span>',reset:'Reset <span class="red">password</span>',newpw:'Set a new <span class="red">password</span>'}[m];
+  const sub={in:'Exclusive access to Play Performance stock at set prices.',up:'Tell us who you are to unlock our stock. First to hit Buy now gets the car.',reset:"Enter your email and we'll send you a reset link.",newpw:'Choose a new password for your account.'}[m];
+  return `<div class="gate"><div class="gbox">
+    <div class="glogo">${LOGO}</div>
+    <h1 class="h-x">${head}</h1><p class="gsub">${sub}</p>
+    <form id="gForm" novalidate class="form1">
+      ${m==='up'?`<div><label class="lbl" for="gName">Full name<span class="req">*</span></label><input id="gName" class="inp" autocomplete="name" required></div>
+        <div><label class="lbl" for="gPhone">Mobile<span class="req">*</span></label><input id="gPhone" class="inp" type="tel" inputmode="tel" autocomplete="tel" required></div>`:''}
+      ${m!=='newpw'?`<div><label class="lbl" for="gEmail">Email${m==='up'?'<span class="req">*</span>':''}</label><input id="gEmail" class="inp" type="email" inputmode="email" autocomplete="email" required></div>`:''}
+      ${m==='up'?`<div class="two"><div><label class="lbl" for="gSuburb">Suburb</label><input id="gSuburb" class="inp" autocomplete="address-level2"></div><div><label class="lbl" for="gState">State<span class="req">*</span></label><select id="gState" class="inp">${['',...STATES].map(x=>`<option value="${x}">${x||'Select…'}</option>`).join('')}</select></div></div>
+        <div><label class="lbl" for="gLook">What are you after? <span class="muted" style="font-weight:400">(optional)</span></label><input id="gLook" class="inp" placeholder="e.g. V8 ute, Mercedes, 4x4 under $60k"></div>`:''}
+      ${m==='in'||m==='up'||m==='newpw'?`<div><label class="lbl" for="gPw">Password${m!=='in'?'<span class="req">*</span>':''}</label><input id="gPw" class="inp" type="password" autocomplete="${m==='in'?'current-password':'new-password'}" ${m!=='in'?'placeholder="At least 8 characters"':''} required></div>`:''}
+      ${m==='in'?`<div class="grow"><span></span><a href="#" data-gm="reset" class="red" style="text-decoration:none;font-size:14px">Forgot your password?</a></div>`:''}
+      ${m==='up'?`<label class="check"><input type="checkbox" id="gOk"><span>I agree to Play Performance contacting me about vehicles and my account.</span></label>`:''}
+      <div class="err" id="gErr"></div>
+      <button class="btn btn-red btn-block" type="submit" id="gGo">${{in:'Sign in',up:'Create account',reset:'Send reset link',newpw:'Save new password'}[m]}</button>
+    </form>
+    <p class="gswitch">${m==='in'?`New here? <a href="#" data-gm="up">Request access</a>`:m==='newpw'?'':`<a href="#" data-gm="in">Back to sign in</a>`}</p>
+    <p class="gfoot">Commercial in confidence. © Play Performance ${new Date().getFullYear()}<br>Questions? Call ${PHONE}</p>
+  </div></div>`;
+}
+function bindGate(){
+  app.querySelectorAll('[data-gm]').forEach(a=>a.onclick=e=>{e.preventDefault();S.gateMode=a.dataset.gm;render()});
+  const f=document.getElementById('gForm');if(!f)return;
+  setTimeout(()=>f.querySelector('input')?.focus(),60);
+  f.onsubmit=async e=>{e.preventDefault();
+    const m=S.gateMode||'in',g=id=>(document.getElementById(id)?.value||'').trim(),er=document.getElementById('gErr'),btn=document.getElementById('gGo');
+    er.style.color='';er.textContent='';
+    const email=g('gEmail'),pw=document.getElementById('gPw')?.value||'';
+    const fail=t=>{er.textContent=t;btn.disabled=false};
+    if(m!=='newpw'&&!/^\S+@\S+\.\S+$/.test(email))return fail('Enter a valid email.');
+    if(m==='up'){if(!g('gName'))return fail('Enter your full name.');if(g('gPhone').replace(/\D/g,'').length<8)return fail('Enter your mobile number.');if(!g('gState'))return fail('Select your state.');if(!document.getElementById('gOk').checked)return fail('Tick the box to continue.')}
+    if((m==='up'||m==='newpw')&&pw.length<8)return fail('Password needs at least 8 characters.');
+    btn.disabled=true;const sb=window.__sb;
+    try{
+      if(m==='reset'){const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:PAGE_URL});if(error)throw error;er.style.color='var(--green)';er.textContent='Check your email for a reset link.';btn.disabled=false;return}
+      if(m==='newpw'){const {error}=await sb.auth.updateUser({password:pw});if(error)throw error;S.recovery=false;location.hash='';location.reload();return}
+      if(m==='up'){
+        const {data,error}=await sb.auth.signUp({email,password:pw,options:{emailRedirectTo:PAGE_URL,data:{name:g('gName'),phone:g('gPhone'),suburb:g('gSuburb'),state:g('gState'),looking_for:g('gLook')}}});
+        if(error)throw error;
+        if(!data.session){S.gateMode='in';render();const e2=document.getElementById('gErr');e2.style.color='var(--green)';e2.textContent='Nearly there! We emailed you a link. Tap it to confirm your email, then sign in.';return}
+        location.reload();return}
+      const {error}=await sb.auth.signInWithPassword({email,password:pw});if(error)throw error;location.reload();
+    }catch(x){const msg=x?.message||'';fail(/invalid login/i.test(msg)?'Wrong email or password.':/already registered|already been registered/i.test(msg)?'That email already has an account. Sign in instead.':/not confirmed/i.test(msg)?'Please confirm your email first. Check your inbox for our link.':/rate limit/i.test(msg)?'Too many attempts. Please wait a few minutes and try again.':msg||'Something went wrong. Try again.')}
+  };
+}
+
 /* ================= Messages ================= */
 const seen=k=>LS.get('pp-seen-'+k)||0;
 function markSeen(k,at){if(at&&at>seen(k))LS.set('pp-seen-'+k,at)}
@@ -425,7 +480,7 @@ function chatPage(uid){
   const quick=isA?['Thanks! We\'ll call you shortly.','Payment received, thank you.','Your car is on its way 🚚','Ready for pickup!']:['Is this still available?','Can I get finance?','Do you deliver to my area?','Can I book an inspection?'];
   const about=S.chatCar?S.vehicles.find(x=>x.id===S.chatCar):null;
   return `${isA?'<button class="btn btn-line btn-sm" data-go="chat" style="margin-bottom:10px">← Inbox</button>':''}
-  <div class="chat-h"><div class="av">${isA?esc(inits(p.name||p.email||'?')):'PP'}</div><div><b>${isA?esc(p.name||'Buyer'):'Play Performance'}</b><small>${isA?esc(p.email||''):'Sales team · usually replies within the hour'}</small></div></div>
+  <div class="chat-h"><div class="av">${isA?esc(inits(p.name||p.email||'?')):'PP'}</div><div><b>${isA?esc(p.name||'Buyer'):'Play Performance'}</b><small>${isA?esc([p.phone,p.email,[p.suburb,p.state].filter(Boolean).join(' ')].filter(Boolean).join(' · ')):'Sales team · usually replies within the hour'}</small></div></div>
   ${bought.length?`<div class="note" style="margin:-4px 0 10px">Bought: ${bought.map(id=>{const v=S.vehicles.find(x=>x.id===id);return v?`<a href="#admin-v-${id}" style="color:#fff">${esc(vName(v))}</a>`:''}).join(', ')}</div>`:''}
   <div class="msgs" id="msgs">${msgsHtml(uid)}</div>
   <div class="composer"><div class="in">
@@ -466,7 +521,7 @@ function adminList(){
   if(q)r=r.filter(v=>(vName(v)+' '+vSub(v)+' '+(v.vin||'')+' '+(v.rego||'')+' '+bName(S.claims[v.id]?.buyer)).toLowerCase().includes(q));
   r.sort((a,b)=>(b.updatedAt||b.createdAt||0)-(a.updatedAt||a.createdAt||0));
   const f=(k,l)=>`<button class="${S.aFilter===k?'on':''}" data-af="${k}">${l}</button>`;
-  return `<h1 class="page-h h-x">Admin</h1>
+  return `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h1 class="page-h h-x">Admin</h1><button class="btn btn-line btn-sm" data-go="admin-customers">👥 Customers</button></div>
   <div class="stats"><div class="card stat hi"><small>Live</small><b>${c.available}</b></div><div class="card stat"><small>Stock value</small><b>${money(value)||'$0'}</b></div><div class="card stat"><small>Sold this month</small><b>${month}</b></div><div class="card stat"><small>Drafts</small><b>${c.draft}</b></div></div>
   <div class="search">${I.search}<input id="aq" class="inp" type="search" placeholder="Search car, rego, VIN or buyer" value="${esc(S.aQ)}" autocomplete="off"></div>
   <div class="chips">${f('available',`Live (${c.available})`)}${f('sold',`Sold (${c.sold})`)}${f('draft',`Drafts (${c.draft})`)}${f('all','All')}</div>
@@ -474,6 +529,22 @@ function adminList(){
   `<div class="alist">${r.map(v=>{const s=adminState(v),cl=S.claims[v.id],ph=(v.photos||[])[0];return `<div class="card arow" data-go="admin-v-${v.id}">${ph?`<img src="${img(ph)}" loading="lazy" alt="">`:'<div class="nimg"></div>'}
     <div class="mid"><div class="t1">${esc(vName(v))}</div><div class="t2">${s==='sold'?(cl?.buyer?'Sold to '+esc(bName(cl.buyer)):'Sold elsewhere'):esc([v.rego,km(v.odometer)].filter(Boolean).join(' · ')||vSub(v))}</div><div style="margin-top:6px;display:flex;gap:8px;align-items:center">${chip(s)}<span class="price">${money(v.price)||'No price'}</span></div></div>
     ${s==='available'?`<button class="lk" data-act="share" data-id="${v.id}" aria-label="Send link">${I.link}</button>`:''}</div>`}).join('')}</div>`}`;
+}
+
+/* ================= Admin: customers ================= */
+async function loadCustomers(){try{const {data}=await window.__sb.from('profiles').select('*').order('created_at',{ascending:false}).limit(1000);S.customers=data||[];(data||[]).forEach(p=>S.profiles[p.id]=p)}catch(e){S.customers=S.customers||[]}soft()}
+function customersPage(){
+  if(!S.customers){loadCustomers();return '<div class="skel" style="height:200px"></div>'}
+  const q=(S.cQ||'').toLowerCase();
+  const list=S.customers.filter(c=>!q||[c.name,c.email,c.phone,c.suburb,c.state,c.looking_for].join(' ').toLowerCase().includes(q));
+  const bought=u=>Object.values(S.claims).filter(c=>c.buyer===u).length;
+  const csv=()=>['Name,Email,Mobile,Suburb,State,Looking for,Joined'].concat(S.customers.map(c=>[c.name,c.email,c.phone,c.suburb,c.state,c.looking_for,(c.created_at||'').slice(0,10)].map(v=>'"'+String(v||'').replace(/"/g,'""')+'"').join(','))).join('\n');
+  S._csv=csv;
+  return `<button class="btn btn-line btn-sm" data-go="admin" style="margin-bottom:12px">← Admin</button>
+  <h1 class="page-h h-x">Customers <span class="red">(${S.customers.length})</span></h1><p class="page-sub">Everyone who has signed up, newest first.</p>
+  <div class="search">${I.search}<input id="cq" class="inp" type="search" placeholder="Search name, email, mobile, state…" value="${esc(S.cQ||'')}" autocomplete="off"></div>
+  <div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn btn-line btn-sm" data-act="copyCsv">Copy as spreadsheet (CSV)</button><button class="btn btn-line btn-sm" data-act="reloadCust">Refresh</button></div>
+  ${list.length?`<div class="inbox">${list.map(c=>`<div class="card irow" data-go="chat-${c.id}"><div class="av">${esc(inits(c.name||c.email))}</div><div class="mid"><b>${esc(c.name||'—')}${c.is_admin?' <span class="chip draft">Staff</span>':''}</b><div class="last">${esc([c.phone,c.email].filter(Boolean).join(' · '))}</div><div class="last">${esc([c.suburb,c.state].filter(Boolean).join(' ')||'')}${c.looking_for?' · Wants: '+esc(c.looking_for):''}</div></div><div class="rt">${fDate(Date.parse(c.created_at))}${bought(c.id)?`<span class="chip">${bought(c.id)} bought</span>`:''}</div></div>`).join('')}</div>`:'<div class="card empty">No customers yet.</div>'}`;
 }
 
 /* ================= Admin: vehicle ================= */
@@ -484,7 +555,7 @@ function adminVehicle(id){
   profiles([cl?.buyer,...att.map(a=>a.buyer)]);
   const pr=cl?.buyer?(S.profiles[cl.buyer]||{}):{},win=cl?.buyer?att.find(a=>a.buyer===cl.buyer):null,ph=(v.photos||[])[0];
   const statusCard=s==='sold'?`<div class="card sect"><h2 class="h-x">Sold${cl?.buyer?' to <span class="red">'+esc(pr.name||'buyer')+'</span>':' <span class="red">elsewhere</span>'}</h2>
-      ${cl?.buyer?`<p class="sub">${fTime(cl.at)} · ${money(cl.price||v.price)}</p><div class="kgrid"><div><small>Buyer</small>${esc(pr.name||'—')}</div><div><small>Email</small>${esc(pr.email||'—')}</div><div><small>Pickup / delivery</small>${esc(win?.delivery||'—')}${win?.location?' · '+esc(win.location):''}</div><div><small>Notes</small>${esc(win?.comments||'—')}</div></div>
+      ${cl?.buyer?`<p class="sub">${fTime(cl.at)} · ${money(cl.price||v.price)}</p><div class="kgrid"><div><small>Buyer</small>${esc(pr.name||'—')}</div><div><small>Email</small>${esc(pr.email||'—')}</div><div><small>Mobile</small>${esc(pr.phone||'—')}</div><div><small>Pickup / delivery</small>${esc(win?.delivery||'—')}${win?.location?' · '+esc(win.location):''}</div><div><small>Notes</small>${esc(win?.comments||'—')}</div></div>
       ${pr.email?`<div class="actrow"><button class="btn btn-line" data-copy="${esc(pr.email)}">Copy email</button></div>`:''}`:`<p class="sub">${fDate(v.soldAt)}${v.soldNote?' · '+esc(v.soldNote):''}</p>`}
       <button class="btn btn-line danger btn-block" data-act="release" data-id="${id}">Release sale (back on sale)</button></div>`
     :s==='available'?`<div class="card sect"><h2 class="h-x">Live <span class="red">for sale</span></h2><p class="sub">Buyers can buy this now for <b style="color:#fff">${money(v.price)||'— (set a price!)'}</b>.</p>
@@ -641,6 +712,8 @@ document.addEventListener('click',async e=>{
     if(r==='toggle'){if(S.isAdmin){LS.set('pp-preview',1);S.isAdmin=false;go('')}else{LS.del('pp-preview');S.isAdmin=true;go('admin')}}return}
   if(a==='copyLink'){copy(link(t.dataset.id),'Link');return}
   if(a==='send'){sendMsg(t.dataset.uid);return}
+  if(a==='copyCsv'){copy(S._csv?S._csv():'','Customer list');return}
+  if(a==='reloadCust'){S.customers=null;render();return}
   if(a==='noCar'){S.chatCar=null;t.closest('.about')?.remove();return}
   if(a==='ask'){if(!S.uid){authSheet('Sign in to message our team.');return}S.chatCar=t.dataset.id;go('chat');setTimeout(()=>document.getElementById('chatTa')?.focus(),80);return}
   if(a==='postTrack'){const v2=S.vehicles.find(x=>x.id===t.dataset.id);if(!v2)return;const g=x=>document.getElementById(x).value.trim();
@@ -678,6 +751,7 @@ let qT;
 document.addEventListener('input',e=>{const t=e.target;
   if(t.id==='q'){S.q=t.value;S.show=24;clearTimeout(qT);qT=setTimeout(()=>render(true),150)}
   else if(t.id==='aq'){S.aQ=t.value;render(true)}
+  else if(t.id==='cq'){S.cQ=t.value;render(true)}
   else if(t.id==='chatTa'){S.chatDraft=t.value;t.style.height='auto';t.style.height=Math.min(140,t.scrollHeight)+'px'}
   else if(t.dataset.d&&S.draft){S.draft[t.dataset.d]=t.value;persist();const e2=document.getElementById('wzErr');if(e2)e2.textContent=''}});
 document.addEventListener('change',e=>{const t=e.target;

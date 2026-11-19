@@ -93,3 +93,31 @@ create policy photos_admin_insert on storage.objects for insert to authenticated
 drop policy if exists photos_admin_delete on storage.objects;
 create policy photos_admin_delete on storage.objects for delete to authenticated using (bucket_id = 'photos' and public.is_admin());
 
+
+-- ===== Update: sign-in required to view stock; extra sign-up details =====
+alter table public.profiles add column if not exists suburb text;
+alter table public.profiles add column if not exists state text;
+alter table public.profiles add column if not exists looking_for text;
+create or replace function public.handle_new_user() returns trigger
+language plpgsql security definer set search_path = public as $$
+begin
+  insert into public.profiles (id, email, name, phone, suburb, state, looking_for)
+  values (new.id, new.email,
+    coalesce(new.raw_user_meta_data->>'name',''), coalesce(new.raw_user_meta_data->>'phone',''),
+    coalesce(new.raw_user_meta_data->>'suburb',''), coalesce(new.raw_user_meta_data->>'state',''),
+    coalesce(new.raw_user_meta_data->>'looking_for',''))
+  on conflict (id) do nothing;
+  return new;
+end $$;
+drop policy if exists docs_read on public.docs;
+create policy docs_read on public.docs for select using (
+  public.is_admin()
+  or (auth.uid() is not null and (
+       (col = 'vehicles' and coalesce(data->>'status','available') not in ('draft','hidden'))
+    or col = 'claims'
+    or path = 'purchases/' || auth.uid()::text
+    or path like 'data/users/' || auth.uid()::text || '/%'
+    or path = 'threads/' || auth.uid()::text
+    or path like 'threads/' || auth.uid()::text || '/%'))
+);
+revoke select on public.docs from anon;

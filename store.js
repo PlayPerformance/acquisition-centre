@@ -67,7 +67,7 @@ window.__makeStore = function (sb) {
     async can() { const { session } = await ready; return !!session; },
     async id() { const { session } = await ready; return session ? session.user.id : null; },
     async me() { const { session, prof } = await ready; return { name: (prof && prof.name) || (session && session.user.email) || '', email: session ? session.user.email : '' }; },
-    async profiles(ids) { const { data } = await sb.from('profiles').select('id,name,email,phone').in('id', ids); return Object.fromEntries((data || []).map(p => [p.id, p])); },
+    async profiles(ids) { const { data } = await sb.from('profiles').select('*').in('id', ids); return Object.fromEntries((data || []).map(p => [p.id, p])); },
   };
   const ASSETS = {
     async upload(blob) {
