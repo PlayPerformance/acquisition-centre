@@ -337,6 +337,44 @@ body.chatmode main{padding-bottom:calc(var(--nav-h) + var(--sab) + 90px)}
 .gswitch a{color:#fff;font-weight:700}
 .gfoot{text-align:center;color:#5f676e;font-size:12px;margin-top:34px;line-height:1.6}
 
+/* gate v2 */
+.gate2{position:relative;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;overflow:hidden;background:#000}
+.g-bg{position:absolute;inset:0;z-index:0}
+.g-slide{position:absolute;inset:-4%;background-size:cover;background-position:center;opacity:0;transform:scale(1.08);transition:opacity 1.6s ease,transform 7s ease-out}
+.g-slide.on{opacity:1;transform:scale(1)}
+.g-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.25) 30%,rgba(0,0,0,.85) 62%,#000 100%),radial-gradient(80% 50% at 0% 0%,rgba(243,0,0,.25),transparent 60%)}
+.g-hero{position:relative;z-index:1;padding:calc(22px + var(--sat)) 22px 0;flex:1;display:flex;flex-direction:column;min-height:42vh}
+.gate2 .glogo{display:flex;justify-content:flex-start;margin:0;color:#fff}
+.gate2 .glogo svg{height:44px;width:auto}
+.gate2 .glogo .sub{font-family:var(--head);font-stretch:125%;font-weight:800;font-size:9px;letter-spacing:2px;line-height:1.25;border-left:2px solid var(--red);padding-left:10px;margin-left:12px;text-transform:uppercase;align-self:center}
+.g-pitch{margin-top:auto;padding-bottom:22px;animation:gUp .8s cubic-bezier(.2,.8,.2,1) both}
+.g-kicker{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:#fff;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.15);padding:6px 11px;border-radius:999px;backdrop-filter:blur(6px)}
+.g-dot{width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 0 0 rgba(243,0,0,.7);animation:gPing 1.8s infinite}
+.g-pitch h2{font-size:clamp(30px,8.6vw,54px);line-height:1.02;margin:14px 0 14px;text-shadow:0 4px 30px rgba(0,0,0,.6)}
+.g-chips{display:flex;flex-wrap:wrap;gap:8px}
+.g-chips span{font-size:12.5px;font-weight:600;color:#e8edf0;background:rgba(20,20,20,.6);border:1px solid rgba(255,255,255,.12);padding:6px 10px;border-radius:8px;backdrop-filter:blur(6px)}
+.g-card{position:relative;z-index:2;background:rgba(12,12,12,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,.08);border-radius:22px 22px 0 0;padding:24px 20px calc(22px + var(--sab));animation:gUp .6s .1s cubic-bezier(.2,.8,.2,1) both}
+.g-card:before{content:"";position:absolute;left:20px;right:20px;top:0;height:3px;border-radius:0 0 3px 3px;background:linear-gradient(90deg,var(--red),transparent)}
+.g-card h1{font-size:24px;margin:0 0 6px;line-height:1.1}
+.g-card .gsub{color:var(--muted);margin:0 0 18px;font-size:14.5px;line-height:1.5}
+.g-go{font-size:17px;letter-spacing:.3px;box-shadow:0 10px 30px rgba(243,0,0,.25)}
+.g-go span{transition:transform .2s}.g-go:hover span{transform:translateX(4px)}
+.pw{position:relative}.pw .inp{padding-right:70px}
+.pw-eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:#eee;border:0;border-radius:8px;padding:7px 10px;font-size:12px;font-weight:700;color:#333}
+@keyframes gUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes gPing{0%{box-shadow:0 0 0 0 rgba(243,0,0,.7)}70%{box-shadow:0 0 0 10px rgba(243,0,0,0)}100%{box-shadow:0 0 0 0 rgba(243,0,0,0)}}
+@media (min-width:900px){
+  .gate2{flex-direction:row}
+  .g-hero{flex:1.2;min-height:100vh;padding:40px 56px}
+  .gate2 .glogo svg{height:56px}
+  .g-pitch{padding-bottom:56px}
+  .g-pitch h2{font-size:64px}
+  .g-shade{background:linear-gradient(90deg,rgba(0,0,0,.35) 0%,rgba(0,0,0,.55) 50%,rgba(0,0,0,.92) 100%),radial-gradient(60% 60% at 0% 0%,rgba(243,0,0,.22),transparent 60%)}
+  .g-card{flex:0 0 460px;border-radius:0;border-top:0;border-left:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;justify-content:center;padding:48px 44px;overflow-y:auto;max-height:100vh}
+  .g-card:before{left:0;right:auto;top:20px;bottom:20px;width:3px;height:auto;border-radius:0 3px 3px 0;background:linear-gradient(180deg,var(--red),transparent)}
+}
+@media (prefers-reduced-motion:reduce){.g-slide,.g-pitch,.g-card{animation:none;transition:none}}
+
 /* sign in */
 .signin{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
 .signin .box{max-width:400px}

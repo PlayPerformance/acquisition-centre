@@ -121,3 +121,8 @@ create policy docs_read on public.docs for select using (
     or path like 'threads/' || auth.uid()::text || '/%'))
 );
 revoke select on public.docs from anon;
+
+-- ===== Update: dealership + licence on sign-up =====
+alter table public.profiles add column if not exists dealership text;
+alter table public.profiles add column if not exists licence text;
+-- handle_new_user() now also stores raw_user_meta_data->>'dealership' and ->>'licence'

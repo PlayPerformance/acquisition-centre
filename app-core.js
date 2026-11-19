@@ -394,30 +394,48 @@ function authSheet(why){
 
 /* ================= Gate (sign-in first) ================= */
 const STATES=['QLD','NSW','VIC','SA','WA','TAS','NT','ACT'];
+const GATE_PICS=['PP67281','PP67115','PP67036','PP67093','PP67270','PP67064'].map(n=>`https://playperformance.com/wp-content/uploads/2026/11/${n}-1024x683.jpg`);
 function gate(){
   const m=S.gateMode||'in';
-  const head={in:'Sign in to your <span class="red">account</span>',up:'Request <span class="red">access</span>',reset:'Reset <span class="red">password</span>',newpw:'Set your <span class="red">password</span>'}[m];
-  const sub={in:'Exclusive access to Play Performance stock at set prices.',up:'Tell us who you are to unlock our stock. First to hit Buy now gets the car.',reset:"Enter your email and we'll send you a reset link.",newpw:'Choose a password for your account. You will use it with your email to sign in.'}[m];
-  return `<div class="gate"><div class="gbox">
-    <div class="glogo">${LOGO}</div>
-    <h1 class="h-x">${head}</h1><p class="gsub">${sub}</p>
-    <form id="gForm" novalidate class="form1">
-      ${m==='up'?`<div><label class="lbl" for="gName">Full name<span class="req">*</span></label><input id="gName" class="inp" autocomplete="name" required></div>
-        <div><label class="lbl" for="gPhone">Mobile<span class="req">*</span></label><input id="gPhone" class="inp" type="tel" inputmode="tel" autocomplete="tel" required></div>`:''}
-      ${m!=='newpw'?`<div><label class="lbl" for="gEmail">Email${m==='up'?'<span class="req">*</span>':''}</label><input id="gEmail" class="inp" type="email" inputmode="email" autocomplete="email" required></div>`:''}
-      ${m==='up'?`<div class="two"><div><label class="lbl" for="gSuburb">Suburb</label><input id="gSuburb" class="inp" autocomplete="address-level2"></div><div><label class="lbl" for="gState">State<span class="req">*</span></label><select id="gState" class="inp">${['',...STATES].map(x=>`<option value="${x}">${x||'Select…'}</option>`).join('')}</select></div></div>
-        <div><label class="lbl" for="gLook">What are you after? <span class="muted" style="font-weight:400">(optional)</span></label><input id="gLook" class="inp" placeholder="e.g. V8 ute, Mercedes, 4x4 under $60k"></div>`:''}
-      ${m==='in'||m==='up'||m==='newpw'?`<div><label class="lbl" for="gPw">Password${m!=='in'?'<span class="req">*</span>':''}</label><input id="gPw" class="inp" type="password" autocomplete="${m==='in'?'current-password':'new-password'}" ${m!=='in'?'placeholder="At least 8 characters"':''} required></div>`:''}
-      ${m==='in'?`<div class="grow"><span></span><a href="#" data-gm="reset" class="red" style="text-decoration:none;font-size:14px">Forgot your password?</a></div>`:''}
-      ${m==='up'?`<label class="check"><input type="checkbox" id="gOk"><span>I agree to Play Performance contacting me about vehicles and my account.</span></label>`:''}
-      <div class="err" id="gErr"></div>
-      <button class="btn btn-red btn-block" type="submit" id="gGo">${{in:'Sign in',up:'Create account',reset:'Send reset link',newpw:'Save new password'}[m]}</button>
-    </form>
-    <p class="gswitch">${m==='in'?`New here? <a href="#" data-gm="up">Request access</a>`:m==='newpw'?'':`<a href="#" data-gm="in">Back to sign in</a>`}</p>
-    <p class="gfoot">Commercial in confidence. © Play Performance ${new Date().getFullYear()}<br>Questions? Call ${PHONE}</p>
-  </div></div>`;
+  const head={in:'Dealer <span class="red">sign in</span>',up:'Request <span class="red">access</span>',reset:'Reset <span class="red">password</span>',newpw:'Set your <span class="red">password</span>'}[m];
+  const sub={in:'Welcome back. Sign in to see this week’s stock.',up:'For licensed motor dealers. Tell us about your dealership and we’ll unlock our stock.',reset:"Enter your email and we'll send you a reset link.",newpw:'Choose a password for your account. You will use it with your email to sign in.'}[m];
+  const f=(id,label,attrs='',req=true,ph='')=>`<div><label class="lbl" for="${id}">${label}${req?'<span class="req">*</span>':''}</label><input id="${id}" class="inp" ${attrs} ${ph?`placeholder="${ph}"`:''}></div>`;
+  return `<div class="gate2">
+    <div class="g-bg" aria-hidden="true">${GATE_PICS.map((p,i)=>`<div class="g-slide ${i===0?'on':''}" style="background-image:url('${p}')"></div>`).join('')}<div class="g-shade"></div></div>
+    <div class="g-hero">
+      <div class="glogo">${LOGO}</div>
+      <div class="g-pitch">
+        <div class="g-kicker"><span class="g-dot"></span> Dealer Acquisition Centre</div>
+        <h2 class="h-x">Trade stock.<br>Set prices.<br><span class="red">First in wins.</span></h2>
+        <div class="g-chips"><span>🔒 Dealers only</span><span>⚡ Buy now, no haggling</span><span>🚚 Delivery tracked</span></div>
+      </div>
+    </div>
+    <div class="g-card">
+      <h1 class="h-x">${head}</h1><p class="gsub">${sub}</p>
+      <form id="gForm" novalidate class="form1">
+        ${m==='up'?`${f('gName','Full name','autocomplete="name"')}
+          <div class="two">${f('gPhone','Mobile','type="tel" inputmode="tel" autocomplete="tel"')}${f('gEmail','Email','type="email" inputmode="email" autocomplete="email"')}</div>
+          ${f('gDealer','Dealership name','autocomplete="organization"',true,'e.g. Coastal Motors Pty Ltd')}
+          <div class="two">${f('gLicence','Dealer licence no.','autocapitalize="characters"',true,'e.g. MD12345')}<div><label class="lbl" for="gState">State<span class="req">*</span></label><select id="gState" class="inp">${['',...STATES].map(x=>`<option value="${x}">${x||'Select…'}</option>`).join('')}</select></div></div>
+          ${f('gSuburb','Suburb','autocomplete="address-level2"',false)}
+          ${f('gLook','What stock are you after?','',false,'e.g. V8 utes, late-model 4x4s')}`:''}
+        ${m==='in'||m==='reset'?f('gEmail','Email','type="email" inputmode="email" autocomplete="email"',false):''}
+        ${m!=='reset'?`<div><label class="lbl" for="gPw">Password${m!=='in'?'<span class="req">*</span>':''}</label><div class="pw"><input id="gPw" class="inp" type="password" autocomplete="${m==='in'?'current-password':'new-password'}" ${m!=='in'?'placeholder="At least 8 characters"':''}><button type="button" class="pw-eye" data-eye aria-label="Show password">Show</button></div></div>`:''}
+        ${m==='in'?`<div class="grow"><span></span><a href="#" data-gm="reset" class="red" style="text-decoration:none;font-size:14px">Forgot your password?</a></div>`:''}
+        ${m==='up'?`<label class="check"><input type="checkbox" id="gOk"><span>I'm a licensed motor dealer and agree to Play Performance contacting me about stock and my account.</span></label>`:''}
+        <div class="err" id="gErr"></div>
+        <button class="btn btn-red btn-block g-go" type="submit" id="gGo">${{in:'Sign in',up:'Request access',reset:'Send reset link',newpw:'Save password'}[m]} <span aria-hidden="true">→</span></button>
+      </form>
+      <p class="gswitch">${m==='in'?`New dealer? <a href="#" data-gm="up">Request access</a>`:m==='newpw'?'':`<a href="#" data-gm="in">Back to sign in</a>`}</p>
+      <p class="gfoot">Commercial in confidence. © Play Performance ${new Date().getFullYear()} · ${PHONE}</p>
+    </div>
+  </div>`;
 }
+let gateTimer=null;
+function gateSlides(){clearInterval(gateTimer);const sl=[...document.querySelectorAll('.g-slide')];if(sl.length<2)return;let k=0;gateTimer=setInterval(()=>{if(!document.body.contains(sl[0])){clearInterval(gateTimer);return}sl[k].classList.remove('on');k=(k+1)%sl.length;sl[k].classList.add('on')},5000)}
 function bindGate(){
+  gateSlides();
+  app.querySelectorAll('[data-eye]').forEach(b=>b.onclick=()=>{const i=document.getElementById('gPw');i.type=i.type==='password'?'text':'password';b.textContent=i.type==='password'?'Show':'Hide'});
   app.querySelectorAll('[data-gm]').forEach(a=>a.onclick=e=>{e.preventDefault();S.gateMode=a.dataset.gm;render()});
   const f=document.getElementById('gForm');if(!f)return;
   setTimeout(()=>f.querySelector('input')?.focus(),60);
@@ -427,16 +445,16 @@ function bindGate(){
     const email=g('gEmail'),pw=document.getElementById('gPw')?.value||'';
     const fail=t=>{er.textContent=t;btn.disabled=false};
     if(m!=='newpw'&&!/^\S+@\S+\.\S+$/.test(email))return fail('Enter a valid email.');
-    if(m==='up'){if(!g('gName'))return fail('Enter your full name.');if(g('gPhone').replace(/\D/g,'').length<8)return fail('Enter your mobile number.');if(!g('gState'))return fail('Select your state.');if(!document.getElementById('gOk').checked)return fail('Tick the box to continue.')}
+    if(m==='up'){if(!g('gName'))return fail('Enter your full name.');if(g('gPhone').replace(/\D/g,'').length<8)return fail('Enter your mobile number.');if(!g('gDealer'))return fail('Enter your dealership name.');if(g('gLicence').length<3)return fail('Enter your dealer licence number.');if(!g('gState'))return fail('Select your state.');if(!document.getElementById('gOk').checked)return fail('Tick the box to continue.')}
     if((m==='up'||m==='newpw')&&pw.length<8)return fail('Password needs at least 8 characters.');
     btn.disabled=true;const sb=window.__sb;
     try{
       if(m==='reset'){const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:PAGE_URL});if(error)throw error;er.style.color='var(--green)';er.textContent='Check your email for a reset link.';btn.disabled=false;return}
       if(m==='newpw'){const {error}=await sb.auth.updateUser({password:pw});if(error)throw error;S.recovery=false;location.hash='';location.reload();return}
       if(m==='up'){
-        const {data,error}=await sb.auth.signUp({email,password:pw,options:{emailRedirectTo:PAGE_URL,data:{name:g('gName'),phone:g('gPhone'),suburb:g('gSuburb'),state:g('gState'),looking_for:g('gLook')}}});
+        const {data,error}=await sb.auth.signUp({email,password:pw,options:{emailRedirectTo:PAGE_URL,data:{name:g('gName'),phone:g('gPhone'),dealership:g('gDealer'),licence:g('gLicence').toUpperCase(),suburb:g('gSuburb'),state:g('gState'),looking_for:g('gLook')}}});
         if(error)throw error;
-        if(!data.session){S.gateMode='in';render();const e2=document.getElementById('gErr');e2.style.color='var(--green)';e2.textContent='Nearly there! We emailed you a link. Tap it to confirm your email, then sign in.';return}
+        if(!data.session){S.gateMode='in';render();const e2=document.getElementById('gErr');e2.style.color='var(--green)';e2.textContent='Request received! We emailed you a link. Tap it to confirm your email, then sign in.';return}
         location.reload();return}
       const {error}=await sb.auth.signInWithPassword({email,password:pw});if(error)throw error;location.reload();
     }catch(x){const msg=x?.message||'';fail(/invalid login/i.test(msg)?'Wrong email or password.':/already registered|already been registered/i.test(msg)?'That email already has an account. Sign in instead.':/not confirmed/i.test(msg)?'Please confirm your email first. Check your inbox for our link.':/rate limit/i.test(msg)?'Too many attempts. Please wait a few minutes and try again.':msg||'Something went wrong. Try again.')}
@@ -480,7 +498,7 @@ function chatPage(uid){
   const quick=isA?['Thanks! We\'ll call you shortly.','Payment received, thank you.','Your car is on its way 🚚','Ready for pickup!']:['Is this still available?','Can I get finance?','Do you deliver to my area?','Can I book an inspection?'];
   const about=S.chatCar?S.vehicles.find(x=>x.id===S.chatCar):null;
   return `${isA?'<button class="btn btn-line btn-sm" data-go="chat" style="margin-bottom:10px">← Inbox</button>':''}
-  <div class="chat-h"><div class="av">${isA?esc(inits(p.name||p.email||'?')):'PP'}</div><div><b>${isA?esc(p.name||'Buyer'):'Play Performance'}</b><small>${isA?esc([p.phone,p.email,[p.suburb,p.state].filter(Boolean).join(' ')].filter(Boolean).join(' · ')):'Sales team · usually replies within the hour'}</small></div></div>
+  <div class="chat-h"><div class="av">${isA?esc(inits(p.name||p.email||'?')):'PP'}</div><div><b>${isA?esc(p.name||'Buyer'):'Play Performance'}</b><small>${isA?esc([p.dealership&&(p.dealership+(p.licence?' (Lic '+p.licence+')':'')),p.phone,p.email,[p.suburb,p.state].filter(Boolean).join(' ')].filter(Boolean).join(' · ')):'Sales team · usually replies within the hour'}</small></div></div>
   ${bought.length?`<div class="note" style="margin:-4px 0 10px">Bought: ${bought.map(id=>{const v=S.vehicles.find(x=>x.id===id);return v?`<a href="#admin-v-${id}" style="color:#fff">${esc(vName(v))}</a>`:''}).join(', ')}</div>`:''}
   <div class="msgs" id="msgs">${msgsHtml(uid)}</div>
   <div class="composer"><div class="in">
@@ -536,15 +554,15 @@ async function loadCustomers(){try{const {data}=await window.__sb.from('profiles
 function customersPage(){
   if(!S.customers){loadCustomers();return '<div class="skel" style="height:200px"></div>'}
   const q=(S.cQ||'').toLowerCase();
-  const list=S.customers.filter(c=>!q||[c.name,c.email,c.phone,c.suburb,c.state,c.looking_for].join(' ').toLowerCase().includes(q));
+  const list=S.customers.filter(c=>!q||[c.name,c.dealership,c.licence,c.email,c.phone,c.suburb,c.state,c.looking_for].join(' ').toLowerCase().includes(q));
   const bought=u=>Object.values(S.claims).filter(c=>c.buyer===u).length;
-  const csv=()=>['Name,Email,Mobile,Suburb,State,Looking for,Joined'].concat(S.customers.map(c=>[c.name,c.email,c.phone,c.suburb,c.state,c.looking_for,(c.created_at||'').slice(0,10)].map(v=>'"'+String(v||'').replace(/"/g,'""')+'"').join(','))).join('\n');
+  const csv=()=>['Name,Dealership,Licence,Email,Mobile,Suburb,State,Looking for,Joined'].concat(S.customers.map(c=>[c.name,c.dealership,c.licence,c.email,c.phone,c.suburb,c.state,c.looking_for,(c.created_at||'').slice(0,10)].map(v=>'"'+String(v||'').replace(/"/g,'""')+'"').join(','))).join('\n');
   S._csv=csv;
   return `<button class="btn btn-line btn-sm" data-go="admin" style="margin-bottom:12px">← Admin</button>
   <h1 class="page-h h-x">Customers <span class="red">(${S.customers.length})</span></h1><p class="page-sub">Everyone who has signed up, newest first.</p>
-  <div class="search">${I.search}<input id="cq" class="inp" type="search" placeholder="Search name, email, mobile, state…" value="${esc(S.cQ||'')}" autocomplete="off"></div>
+  <div class="search">${I.search}<input id="cq" class="inp" type="search" placeholder="Search name, dealership, licence, email…" value="${esc(S.cQ||'')}" autocomplete="off"></div>
   <div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn btn-line btn-sm" data-act="copyCsv">Copy as spreadsheet (CSV)</button><button class="btn btn-line btn-sm" data-act="reloadCust">Refresh</button></div>
-  ${list.length?`<div class="inbox">${list.map(c=>`<div class="card irow" data-go="chat-${c.id}"><div class="av">${esc(inits(c.name||c.email))}</div><div class="mid"><b>${esc(c.name||'—')}${c.is_admin?' <span class="chip draft">Staff</span>':''}</b><div class="last">${esc([c.phone,c.email].filter(Boolean).join(' · '))}</div><div class="last">${esc([c.suburb,c.state].filter(Boolean).join(' ')||'')}${c.looking_for?' · Wants: '+esc(c.looking_for):''}</div></div><div class="rt">${fDate(Date.parse(c.created_at))}${bought(c.id)?`<span class="chip">${bought(c.id)} bought</span>`:''}</div></div>`).join('')}</div>`:'<div class="card empty">No customers yet.</div>'}`;
+  ${list.length?`<div class="inbox">${list.map(c=>`<div class="card irow" data-go="chat-${c.id}"><div class="av">${esc(inits(c.name||c.email))}</div><div class="mid"><b>${esc(c.name||'—')}${c.is_admin?' <span class="chip draft">Staff</span>':''}</b><div class="last">${c.dealership?`<b style="display:inline;font-size:13.5px">${esc(c.dealership)}</b>${c.licence?' · Lic '+esc(c.licence):''} · `:''}${esc([c.phone,c.email].filter(Boolean).join(' · '))}</div><div class="last">${esc([c.suburb,c.state].filter(Boolean).join(' ')||'')}${c.looking_for?' · Wants: '+esc(c.looking_for):''}</div></div><div class="rt">${fDate(Date.parse(c.created_at))}${bought(c.id)?`<span class="chip">${bought(c.id)} bought</span>`:''}</div></div>`).join('')}</div>`:'<div class="card empty">No customers yet.</div>'}`;
 }
 
 /* ================= Admin: vehicle ================= */
@@ -555,7 +573,7 @@ function adminVehicle(id){
   profiles([cl?.buyer,...att.map(a=>a.buyer)]);
   const pr=cl?.buyer?(S.profiles[cl.buyer]||{}):{},win=cl?.buyer?att.find(a=>a.buyer===cl.buyer):null,ph=(v.photos||[])[0];
   const statusCard=s==='sold'?`<div class="card sect"><h2 class="h-x">Sold${cl?.buyer?' to <span class="red">'+esc(pr.name||'buyer')+'</span>':' <span class="red">elsewhere</span>'}</h2>
-      ${cl?.buyer?`<p class="sub">${fTime(cl.at)} · ${money(cl.price||v.price)}</p><div class="kgrid"><div><small>Buyer</small>${esc(pr.name||'—')}</div><div><small>Email</small>${esc(pr.email||'—')}</div><div><small>Mobile</small>${esc(pr.phone||'—')}</div><div><small>Pickup / delivery</small>${esc(win?.delivery||'—')}${win?.location?' · '+esc(win.location):''}</div><div><small>Notes</small>${esc(win?.comments||'—')}</div></div>
+      ${cl?.buyer?`<p class="sub">${fTime(cl.at)} · ${money(cl.price||v.price)}</p><div class="kgrid"><div><small>Buyer</small>${esc(pr.name||'—')}</div><div><small>Email</small>${esc(pr.email||'—')}</div><div><small>Mobile</small>${esc(pr.phone||'—')}</div><div><small>Dealership</small>${esc([pr.dealership,pr.licence&&('Lic '+pr.licence)].filter(Boolean).join(' · ')||'—')}</div><div><small>Pickup / delivery</small>${esc(win?.delivery||'—')}${win?.location?' · '+esc(win.location):''}</div><div><small>Notes</small>${esc(win?.comments||'—')}</div></div>
       ${pr.email?`<div class="actrow"><button class="btn btn-line" data-copy="${esc(pr.email)}">Copy email</button></div>`:''}`:`<p class="sub">${fDate(v.soldAt)}${v.soldNote?' · '+esc(v.soldNote):''}</p>`}
       <button class="btn btn-line danger btn-block" data-act="release" data-id="${id}">Release sale (back on sale)</button></div>`
     :s==='available'?`<div class="card sect"><h2 class="h-x">Live <span class="red">for sale</span></h2><p class="sub">Buyers can buy this now for <b style="color:#fff">${money(v.price)||'— (set a price!)'}</b>.</p>
