@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Dealer Acquisition Centre | Play Performance</title>
+<meta name="description" content="Play Performance's trade-only stock portal for licensed motor dealers. Set wholesale prices, projected retail shown upfront, first to hit Buy now gets the car.">
+<meta property="og:title" content="Play Performance Dealer Acquisition Centre">
+<meta property="og:description" content="Trade stock at set wholesale prices. See your projected margin upfront. First in wins.">
+<meta property="og:image" content="https://playperformance.com/wp-content/uploads/2026/11/PP67281-1024x683.jpg">
+<link rel="icon" href="https://playperformance.com/wp-content/uploads/2023/07/cropped-playperffavi-32x32.png">
+<link rel="apple-touch-icon" href="https://playperformance.com/wp-content/uploads/2023/07/cropped-playperffavi-180x180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&family=Archivo:wdth,wght@125,700;125,800&display=swap" rel="stylesheet">
+<style>
+:root{--red:#F30000;--red-d:#c80000;--bg:#000;--card:#111;--card2:#181818;--line:#252525;--text:#fff;--muted:#a3a3a3;--green:#22c55e;--head:"Archivo",Arial,sans-serif}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{margin:0;background:var(--bg);color:var(--text)}
+body{font-family:"Work Sans",Arial,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.55;padding-bottom:84px}
+@media(min-width:900px){body{padding-bottom:0}}
+a{color:inherit}
+img{display:block;max-width:100%}
+.hx{font-family:var(--head);font-stretch:125%;font-weight:800;text-transform:uppercase;letter-spacing:.2px;line-height:1.02;margin:0}
+.red{color:var(--red)}.muted{color:var(--muted)}.grn{color:var(--green)}
+.wrap{max-width:1160px;margin:0 auto;padding:0 20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 24px;border-radius:4px;font-weight:700;font-size:16px;text-decoration:none;border:1.5px solid transparent;transition:background .15s,transform .15s}
+.btn:active{transform:scale(.98)}
+.btn-red{background:var(--red);color:#fff}.btn-red:hover{background:var(--red-d)}
+.btn-ghost{border-color:rgba(255,255,255,.45);color:#fff;background:rgba(0,0,0,.25);backdrop-filter:blur(6px)}.btn-ghost:hover{border-color:#fff}
+.kick{display:inline-flex;align-items:center;gap:8px;font-family:var(--head);font-stretch:125%;font-weight:700;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#fff}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 0 0 rgba(243,0,0,.7);animation:pulse 1.8s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 10px rgba(243,0,0,0)}100%{box-shadow:0 0 0 0 rgba(243,0,0,0)}}
+
+/* nav */
+.nav{position:fixed;inset:0 0 auto;z-index:20;transition:background .25s,border-color .25s;border-bottom:1px solid transparent}
+.nav.solid{background:rgba(0,0,0,.92);backdrop-filter:blur(10px);border-color:var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:68px}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff}
+.logo svg{height:34px;width:auto}
+.logo span{font-family:var(--head);font-stretch:125%;font-weight:800;font-size:9px;letter-spacing:2px;line-height:1.25;border-left:2px solid var(--red);padding-left:10px;text-transform:uppercase}
+.nav-r{display:flex;align-items:center;gap:18px}
+.nav-r a.sl{font-weight:600;text-decoration:none;font-size:15px}
+.nav-r a.sl:hover{color:var(--red)}
+.nav-r .btn{min-height:40px;padding:0 16px;font-size:14px}
+@media(max-width:560px){.logo span{display:none}.nav-r .btn{display:none}}
+
+/* hero */
+.hero{position:relative;min-height:100svh;display:flex;align-items:flex-end;overflow:hidden}
+.slides,.slide,.shade{position:absolute;inset:0}
+.slide{background-size:cover;background-position:center;opacity:0;transform:scale(1.08);transition:opacity 1.4s ease,transform 7s linear}
+.slide.on{opacity:1;transform:scale(1)}
+.shade{background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.15) 35%,rgba(0,0,0,.75) 70%,#000 100%)}
+.hero .wrap{position:relative;padding-top:110px;padding-bottom:56px;width:100%}
+.hero h1{font-size:clamp(40px,10vw,92px);margin:18px 0 18px}
+.hero p.lead{font-size:clamp(17px,2.2vw,21px);max-width:620px;color:#e5e5e5;margin:0 0 28px}
+.ctas{display:flex;flex-wrap:wrap;gap:12px}
+@media(max-width:560px){.ctas .btn{flex:1 1 100%}}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+.chips span{font-size:13px;font-weight:600;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(6px)}
+
+/* sections */
+section{padding:76px 0}
+@media(min-width:900px){section{padding:108px 0}}
+.eyebrow{font-family:var(--head);font-stretch:125%;font-weight:700;font-size:12px;letter-spacing:2.4px;text-transform:uppercase;color:var(--red);margin:0 0 14px}
+h2.hx{font-size:clamp(30px,6vw,56px);margin-bottom:18px}
+.sub{font-size:18px;color:var(--muted);max-width:640px;margin:0}
+.rule{border-top:1px solid var(--line)}
+
+/* what */
+.what{display:grid;gap:40px}
+@media(min-width:900px){.what{grid-template-columns:1.05fr 1fr;align-items:center;gap:64px}}
+.price-demo{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.pd-img{aspect-ratio:16/10;background:#222 center/cover}
+.pd-b{padding:20px}
+.pd-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:3px;padding:3px 8px;margin-bottom:10px}
+.pd-t{font-weight:700;font-size:19px;margin:0 0 2px}
+.pd-m{color:var(--muted);font-size:14px;margin:0 0 16px}
+.pd-row{display:flex;justify-content:space-between;align-items:baseline;padding:12px 0;border-top:1px solid var(--line)}
+.pd-row .l{color:var(--muted);font-size:14px}
+.pd-row .v{font-family:var(--head);font-stretch:125%;font-weight:800;font-size:22px}
+.pd-row .v.big{font-size:30px}
+.pd-buy{margin-top:14px;width:100%}
+.pd-note{font-size:12px;color:var(--muted);margin:12px 0 0}
+
+/* stock teaser */
+.stock-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:28px}
+.rail{display:grid;grid-auto-flow:column;grid-auto-columns:78%;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;scrollbar-width:none}
+.rail::-webkit-scrollbar{display:none}
+@media(min-width:640px){.rail{grid-auto-columns:46%}}
+@media(min-width:1000px){.rail{grid-auto-flow:row;grid-template-columns:repeat(3,1fr);overflow:visible}}
+.car{scroll-snap-align:start;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;text-decoration:none;color:#fff;transition:border-color .2s,transform .2s}
+.car:hover{border-color:#444;transform:translateY(-2px)}
+.car .im{aspect-ratio:3/2;background:#222 center/cover;position:relative}
+.car .im b{position:absolute;left:10px;top:10px;background:var(--red);font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:4px 8px;border-radius:3px}
+.car .cb{padding:14px 16px 16px}
+.car h3{margin:0;font-size:17px}
+.car .meta{color:var(--muted);font-size:13px;margin:2px 0 12px}
+.lock{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding-top:12px}
+.lock .blur{font-family:var(--head);font-stretch:125%;font-weight:800;font-size:20px;filter:blur(7px);user-select:none}
+.lock .lk{font-size:13px;font-weight:700;color:var(--red);white-space:nowrap}
+
+/* steps */
+.steps{display:grid;gap:14px;margin-top:40px;counter-reset:s}
+@media(min-width:760px){.steps{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1100px){.steps{grid-template-columns:repeat(4,1fr)}}
+.step{position:relative;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:26px 22px 24px}
+.step:before{counter-increment:s;content:"0" counter(s);font-family:var(--head);font-stretch:125%;font-weight:800;font-size:44px;color:var(--red);line-height:1;display:block;margin-bottom:16px}
+.step h3{margin:0 0 8px;font-size:19px}
+.step p{margin:0;color:var(--muted);font-size:15px}
+.step .ic{position:absolute;right:20px;top:24px;font-size:24px;opacity:.9}
+
+/* benefits */
+.bens{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:40px}
+@media(min-width:700px){.bens{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1050px){.bens{grid-template-columns:repeat(3,1fr)}}
+.ben{background:#0a0a0a;padding:28px 24px}
+.ben .bi{width:44px;height:44px;border-radius:8px;background:rgba(243,0,0,.12);border:1px solid rgba(243,0,0,.35);display:flex;align-items:center;justify-content:center;font-size:21px;margin-bottom:16px}
+.ben h3{margin:0 0 6px;font-size:18px}
+.ben p{margin:0;color:var(--muted);font-size:15px}
+
+/* phone strip */
+.split{display:grid;gap:40px;align-items:center}
+@media(min-width:900px){.split{grid-template-columns:1fr 1fr;gap:64px}}
+.ticks{list-style:none;padding:0;margin:26px 0 0;display:grid;gap:14px}
+.ticks li{display:flex;gap:12px;font-size:16px}
+.ticks li:before{content:"";flex:0 0 22px;height:22px;border-radius:50%;background:var(--red) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center/13px no-repeat;margin-top:1px}
+.track{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px}
+.track h4{margin:0 0 2px;font-size:17px}
+.track .tm{color:var(--muted);font-size:13px;margin:0 0 18px}
+.tl{list-style:none;margin:0;padding:0}
+.tl li{position:relative;padding:0 0 20px 32px;font-size:15px}
+.tl li:last-child{padding-bottom:0}
+.tl li:before{content:"";position:absolute;left:6px;top:4px;width:12px;height:12px;border-radius:50%;background:#333;border:2px solid #333}
+.tl li:after{content:"";position:absolute;left:12px;top:20px;bottom:0;width:2px;background:#2a2a2a}
+.tl li:last-child:after{display:none}
+.tl li.done:before{background:var(--red);border-color:var(--red)}
+.tl li.done:after{background:var(--red)}
+.tl li.now:before{background:#000;border-color:var(--red);box-shadow:0 0 0 4px rgba(243,0,0,.2)}
+.tl li small{display:block;color:var(--muted);font-size:13px}
+.chatb{margin-top:18px;border-top:1px solid var(--line);padding-top:16px;display:grid;gap:8px}
+.bub{max-width:82%;padding:9px 13px;border-radius:14px;font-size:14px}
+.bub.me{justify-self:end;background:var(--red);border-bottom-right-radius:4px}
+.bub.them{background:#222;border-bottom-left-radius:4px}
+
+/* faq */
+.faq{margin-top:34px;border-top:1px solid var(--line)}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;padding:20px 40px 20px 0;font-weight:700;font-size:17px;position:relative}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary:after{content:"+";position:absolute;right:4px;top:14px;font-size:28px;font-weight:400;color:var(--red);transition:transform .2s}
+.faq details[open] summary:after{transform:rotate(45deg)}
+.faq p{margin:0 0 20px;color:var(--muted);max-width:760px}
+
+/* final cta */
+.final{position:relative;overflow:hidden;text-align:center;padding:96px 0}
+.final .bgimg{position:absolute;inset:0;background:url("https://playperformance.com/wp-content/uploads/2026/11/PP67036-1024x683.jpg") center/cover;opacity:.28;filter:grayscale(.3)}
+.final .wrap{position:relative}
+.final h2{margin-left:auto;margin-right:auto;max-width:820px}
+.final .sub{margin:0 auto 30px}
+.final .ctas{justify-content:center}
+footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-between;align-items:center}
+footer a{text-decoration:none}footer a:hover{color:#fff}
+
+/* sticky mobile cta */
+.mcta{position:fixed;left:0;right:0;bottom:0;z-index:30;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:rgba(0,0,0,.94);backdrop-filter:blur(10px);border-top:1px solid var(--line);display:flex;gap:10px;transform:translateY(110%);transition:transform .3s}
+.mcta.show{transform:none}
+.mcta .btn{flex:1;min-height:48px}
+.mcta .btn-ghost{flex:0 0 auto;padding:0 18px}
+@media(min-width:900px){.mcta{display:none}}
+
+.rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.rv.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none}.slide{transition:opacity .5s}.dot{animation:none}}
+</style>
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Play Performance"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 123 50" fill="none" aria-label="Play Performance"><path d="M71.7053 21.9331H71.8022H71.9908H72.0878H73.8296L73.2783 14.3462L69.7695 21.9331H70.0532H71.7053Z" fill="currentColor"/><path d="M23.8652 32.6092C25.6922 32.5235 27.5044 32.2419 29.2704 31.7692L27.7099 39.7432H67.1782L69.3331 35.0704L69.6743 39.7432H101.615L104.129 25.568L122.124 0H98.5639L97.5978 1.42679L97.1489 0H66.6215L54.6781 21.9886H51.7421L56.0447 0H35.4872L35.1963 1.51418C32.8026 0.508293 29.9743 0 26.7707 0H9.69693L8.98762 3.59194L6.02825 18.7052L1.91245 39.7503H22.4681L23.8652 32.6092ZM21.3404 29.9625L19.9038 37.2748H4.86821L11.6363 2.6895H26.4852C29.6457 2.6895 32.3518 3.22454 34.5283 4.29463C35.3515 4.68809 36.1259 5.17528 36.8358 5.74639L37.4338 2.68414H52.4766L48.1668 24.6709H56.0088L67.9486 2.6895H94.8737L96.4306 7.57089L99.7222 2.6895H116.642L101.279 24.5158L99.02 37.2748H85.2594L87.8919 23.8256L83.2338 11.5195L84.823 23.97L82.2174 37.2748H71.9297L71.549 32.0439H67.4781L65.0574 37.2748H30.6656L32.5996 27.3979C31.9298 27.7747 31.2378 28.1112 30.5274 28.4056C28.0277 29.4364 25.1905 29.9572 22.0875 29.9572L21.3404 29.9625Z" fill="currentColor"/><path d="M109.624 35.37H110.398C110.55 35.37 110.757 35.3932 110.818 35.4948C110.915 35.714 110.954 35.9538 110.933 36.1922C110.929 36.3114 110.936 36.4308 110.953 36.5489C110.969 36.6866 111.009 36.8206 111.071 36.9448L111.15 37.1035H112.7L112.321 36.6416C112.259 36.5481 112.221 36.441 112.21 36.3295C112.173 36.1246 112.156 35.9169 112.158 35.7088C112.162 35.5369 112.139 35.3653 112.089 35.2005C112.047 35.0625 111.974 34.9362 111.874 34.8314L111.834 34.7886L111.863 34.7618C111.98 34.6417 112.072 34.4999 112.134 34.3445C112.207 34.1526 112.242 33.9485 112.237 33.7434C112.237 33.2209 112.018 32.3416 110.592 32.3167H108.335V37.0982H109.624V35.37ZM109.624 33.4884H110.507C110.584 33.4881 110.661 33.4947 110.737 33.508C110.77 33.5125 110.802 33.5254 110.829 33.5455L110.859 33.5651C110.879 33.5772 110.895 33.5945 110.906 33.615C110.931 33.691 110.942 33.7707 110.938 33.8504C110.938 34.1447 110.831 34.2446 110.518 34.2446H109.62L109.624 33.4884Z" fill="currentColor"/><path d="M110.152 39.8019C111.176 39.8019 112.177 39.5003 113.028 38.9353C113.879 38.3704 114.543 37.5673 114.935 36.6278C115.327 35.6882 115.429 34.6544 115.229 33.657C115.03 32.6596 114.537 31.7434 113.813 31.0243C113.088 30.3052 112.166 29.8155 111.162 29.6171C110.157 29.4187 109.117 29.5205 108.171 29.9097C107.225 30.2989 106.416 30.9579 105.847 31.8035C105.278 32.649 104.975 33.6431 104.975 34.6601C104.976 36.0234 105.522 37.3304 106.493 38.2943C107.463 39.2583 108.779 39.8005 110.152 39.8019ZM110.152 30.2014C111.04 30.2014 111.908 30.4629 112.646 30.9528C113.384 31.4427 113.96 32.1391 114.299 32.9538C114.639 33.7685 114.728 34.665 114.555 35.53C114.382 36.3949 113.954 37.1893 113.326 37.8129C112.698 38.4364 111.898 38.8611 111.028 39.0331C110.157 39.2052 109.254 39.1169 108.434 38.7794C107.613 38.4419 106.912 37.8705 106.419 37.1372C105.926 36.404 105.662 35.5419 105.662 34.6601C105.662 33.4776 106.135 32.3435 106.977 31.5073C107.819 30.6711 108.961 30.2014 110.152 30.2014Z" fill="currentColor"/><path d="M24.6176 12.1384H21.9635L20.3581 20.3425L20.324 20.5208H23.1972C24.781 20.5101 26.038 20.1534 26.9359 19.424C27.6772 18.844 28.232 18.0618 28.5323 17.1732C28.6145 16.9316 28.6811 16.6849 28.7316 16.4348C28.9848 15.1383 28.7549 14.0842 28.0582 13.3102C27.392 12.5326 26.232 12.1384 24.6104 12.1384" fill="currentColor"/><path d="M7.92096 42.0083H4.14993V41.9958H1.52816V42.0083L1.12233 44.0611L0.79012 45.7608L0.384286 47.8261L0 49.7808H2.61638L2.99887 47.8189H6.77887C8.49918 47.8189 10.1548 46.5081 10.4691 44.9101C10.7833 43.3121 9.64306 42.0012 7.92096 42.0012M7.85272 44.9101C7.79153 45.1488 7.6528 45.3608 7.45803 45.5133C7.26325 45.6658 7.02328 45.7503 6.77528 45.7537H3.41188L3.74589 44.054H7.12186C7.23122 44.0488 7.34034 44.0685 7.44087 44.1115C7.5414 44.1546 7.63069 44.22 7.7019 44.3026C7.77311 44.3852 7.82437 44.4829 7.85176 44.5881C7.87914 44.6934 7.88193 44.8035 7.8599 44.9101" fill="currentColor"/><path d="M20.4443 43.9505L20.8268 41.9958H14.5005H13.6277H11.8841L10.3577 49.7683L10.3523 49.7915H19.2968L19.3004 49.7683L19.5949 48.2701L19.6847 47.8154H13.3566L13.5433 46.8719H19.4333L19.4351 46.8665H19.8715L20.254 44.9118H18.8156V44.9172H13.9258L14.1162 43.9505H20.4443Z" fill="currentColor"/><path d="M28.3994 42.0083H24.6284V41.9958H22.0067V42.0083L21.6044 44.0611L21.2704 45.7608L20.8646 47.8261L20.4803 49.7879H23.0967L23.4792 47.8261H25.9932L27.0526 49.7879H30.1054L28.597 47.5657C29.7588 47.1109 30.707 46.1014 30.9314 44.9243C31.2475 43.3192 30.1054 42.0155 28.3833 42.0155M28.315 44.9243C28.2533 45.1628 28.1144 45.3744 27.9198 45.5269C27.7251 45.6793 27.4854 45.764 27.2376 45.7679H23.8832L24.2172 44.0683H27.5824C27.6926 44.0613 27.803 44.0798 27.9049 44.1221C28.0068 44.1644 28.0975 44.2295 28.17 44.3124C28.2424 44.3952 28.2947 44.4935 28.3226 44.5996C28.3506 44.7058 28.3535 44.8169 28.3312 44.9243" fill="currentColor"/><path d="M40.9497 44.0058L41.3448 41.9958H35.207H32.6247H32.5906L31.0607 49.7915H33.6752L34.1332 47.4604H39.8472L39.8903 47.2375L40.1973 45.6716L40.2404 45.4505H34.5282L34.8119 44.0058H40.9497Z" fill="currentColor"/><path d="M47.2959 41.7852C43.884 41.7852 41.8171 42.9284 41.2353 45.8872C40.9875 47.1517 41.1365 48.097 41.6681 48.7515C42.3702 49.6183 43.7367 50 45.6833 50C49.0952 50 51.1495 48.8567 51.7331 45.8979C51.9827 44.621 51.8319 43.6882 51.3004 43.0319C50.6 42.1562 49.2425 41.7834 47.2959 41.7834M49.1168 45.8855C48.9372 46.795 47.9639 47.8277 46.1071 47.8277C45.1123 47.8277 44.491 47.5388 44.1552 47.1286C44.0127 46.9568 43.9114 46.7553 43.8588 46.539C43.8063 46.3227 43.8038 46.0974 43.8517 45.8801C44.0312 44.9688 45.0045 43.9361 46.8703 43.9361C47.8544 43.9361 48.4865 44.225 48.8241 44.6352C48.9631 44.8087 49.0616 45.0107 49.1122 45.2267C49.1628 45.4426 49.1644 45.6671 49.1168 45.8837" fill="currentColor"/><path d="M59.9359 42.0083H56.1649V41.9958H53.5432V42.0083L53.1391 44.0611L52.8051 45.7608L52.3993 47.8261L52.0168 49.7879H54.6314L55.0156 47.8261H57.5297L58.5874 49.7879H61.6509L60.1425 47.5657C61.3043 47.1109 62.2524 46.1014 62.4769 44.9243C62.7947 43.3192 61.6527 42.0155 59.9306 42.0155M59.8623 44.9243C59.8006 45.1628 59.6617 45.3744 59.4671 45.5269C59.2724 45.6793 59.0327 45.764 58.7849 45.7679H55.4197L55.7537 44.0683H59.1189C59.2291 44.0613 59.3395 44.0798 59.4414 44.1221C59.5433 44.1644 59.634 44.2295 59.7065 44.3124C59.7789 44.3952 59.8312 44.4935 59.8591 44.5996C59.8871 44.7058 59.89 44.8169 59.8677 44.9243" fill="currentColor"/><path d="M73.1544 41.9958H72.8958L69.0476 46.6276L67.004 41.9958H66.7472H64.1309L62.6027 49.7808H65.2191L65.9733 45.9374L67.7708 49.7683H68.4298H69.0781L72.3786 45.9374L71.6244 49.7808H74.2516L75.7815 41.9958H73.1544Z" fill="currentColor"/><path d="M81.3932 41.9958L75.1944 49.7683H78.2471L79.1827 48.593H84.7171L85.2002 49.7683H88.2529L85.1068 41.9958H81.3932ZM80.8276 46.5277L82.8585 43.9844L83.8803 46.5277H80.8276Z" fill="currentColor"/><path d="M98.2515 41.9958L97.2943 46.8719L93.8465 41.9958H90.7273L89.201 49.7683L89.1992 49.7808H91.8263L92.7871 44.894L96.2331 49.7683H96.7251L96.7233 49.7808H99.3397L99.3415 49.7683L100.868 41.9958H99.1242H98.2515Z" fill="currentColor"/><path d="M107.205 41.7854C103.793 41.7854 101.726 42.9286 101.144 45.8874C100.895 47.1519 101.046 48.0971 101.577 48.7517C102.278 49.6167 103.646 50.0001 105.591 50.0001C108.71 50.0001 110.71 49.0335 111.47 46.5919H108.735C108.291 47.2571 107.395 47.8403 106.02 47.8403C105.025 47.8403 104.404 47.5514 104.068 47.1412C103.925 46.9696 103.824 46.7681 103.771 46.5519C103.718 46.3356 103.715 46.1102 103.763 45.8927C103.942 44.9814 104.915 43.9487 106.783 43.9487C107.767 43.9487 108.399 44.2377 108.737 44.6479C108.865 44.8054 108.958 44.9876 109.012 45.1829H111.752C111.831 44.2609 111.648 43.551 111.213 43.0285C110.513 42.1528 109.153 41.78 107.209 41.78" fill="currentColor"/><path d="M121.939 43.9505L122.321 41.9958H115.995H115.122H113.379L111.852 49.7683L111.847 49.7915H120.791L120.795 49.7683L121.09 48.2701L121.179 47.8154H114.851L115.038 46.8719H119.858H120.928H121.364L121.749 44.9172H121.312H120.31H115.42L115.611 43.9505H121.939Z" fill="currentColor"/></svg><span class="sub">Acquisition<br>Centre</span><span>Dealer<br>Acquisition<br>Centre</span></a>
+    <nav class="nav-r">
+      <a class="sl" href="../#signin">Sign in</a>
+      <a class="btn btn-red" href="../#signup">Request access</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <!-- HERO -->
+  <div class="hero">
+    <div class="slides" aria-hidden="true">
+      <div class="slide on" style="background-image:url('https://playperformance.com/wp-content/uploads/2026/11/PP67281-1024x683.jpg')"></div>
+      <div class="slide" style="background-image:url('https://playperformance.com/wp-content/uploads/2026/11/PP67115-1024x683.jpg')"></div>
+      <div class="slide" style="background-image:url('https://playperformance.com/wp-content/uploads/2026/11/PP67036-1024x683.jpg')"></div>
+      <div class="slide" style="background-image:url('https://playperformance.com/wp-content/uploads/2026/11/PP67093-1024x683.jpg')"></div>
+      <div class="slide" style="background-image:url('https://playperformance.com/wp-content/uploads/2026/11/PP67270-1024x683.jpg')"></div>
+      <div class="slide" style="background-image:url('https://playperformance.com/wp-content/uploads/2026/11/PP67064-1024x683.jpg')"></div>
+      <div class="shade"></div>
+    </div>
+    <div class="wrap">
+      <div class="kick"><span class="dot"></span> For licensed motor dealers</div>
+      <h1 class="hx">Trade stock.<br>Set prices.<br><span class="red">First in wins.</span></h1>
+      <p class="lead">The Play Performance Dealer Acquisition Centre is our private, trade-only stock portal. See our performance and prestige cars before anyone else, at a fixed wholesale price, with your projected retail margin shown upfront.</p>
+      <div class="ctas">
+        <a class="btn btn-red" href="../#signup">Request dealer access <span aria-hidden="true">→</span></a>
+        <a class="btn btn-ghost" href="#how">See how it works</a>
+      </div>
+      <div class="chips"><span>🔒 Dealers only</span><span>💲 Set wholesale prices</span><span>⚡ Buy now, no haggling</span><span>🚚 Delivery tracked</span></div>
+    </div>
+  </div>
+
+  <!-- WHAT IT IS -->
+  <section id="what">
+    <div class="wrap what">
+      <div class="rv">
+        <p class="eyebrow">What it is</p>
+        <h2 class="hx">Our trade stock, <span class="red">straight to your yard.</span></h2>
+        <p class="sub">Every car we take in that suits the trade goes up here first, with full photos, specs, condition notes and one clear wholesale price. No auctions, no bidding wars and no back-and-forth on the phone. If the numbers work for you, hit <b style="color:#fff">Buy now</b> and it's yours.</p>
+        <ul class="ticks">
+          <li>One set wholesale price on every car</li>
+          <li>Projected retail and your margin shown on every listing</li>
+          <li>First dealer to hit Buy now locks the car in, in real time</li>
+          <li>Delivery or pickup, tracked from purchase to your door</li>
+        </ul>
+      </div>
+      <div class="price-demo rv" aria-label="Example listing">
+        <div class="pd-img" style="background-image:url('https://playperformance.com/wp-content/uploads/2026/11/PP67270-1024x683.jpg')"></div>
+        <div class="pd-b">
+          <span class="pd-tag">Example listing</span>
+          <p class="pd-t">2023 Toyota HiLux SR5</p>
+          <p class="pd-m">49,528 km · Automatic · Diesel · 4WD</p>
+          <div class="pd-row"><span class="l">Wholesale price</span><span class="v big">$40,000</span></div>
+          <div class="pd-row"><span class="l">Projected retail (+25%)</span><span class="v">$50,000</span></div>
+          <div class="pd-row"><span class="l">Your projected margin</span><span class="v grn">+$10,000</span></div>
+          <a class="btn btn-red pd-buy" href="../#signup">Buy now</a>
+          <p class="pd-note">Figures are illustrative. Real prices are visible once you're signed in.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STOCK TEASER -->
+  <section class="rule" id="stock">
+    <div class="wrap">
+      <div class="stock-head rv">
+        <div>
+          <p class="eyebrow">On the portal now</p>
+          <h2 class="hx" style="margin:0">A taste of <span class="red">the stock.</span></h2>
+        </div>
+        <a class="btn btn-ghost" href="../#signup">Unlock prices →</a>
+      </div>
+      <div class="rail rv">
+        <a class="car" href="../#signup"><div class="im" style="background-image:url('https://playperformance.com/wp-content/uploads/2026/11/PP67281-1024x683.jpg')"><b>Available</b></div><div class="cb"><h3>2021 Ford Ranger Wildtrak</h3><p class="meta">82,730 km · Automatic · Diesel</p><div class="lock"><span class="blur" aria-hidden="true">$00,000</span><span class="lk">🔒 Dealers only</span></div></div></a>
+        <a class="car" href="../#signup"><div class="im" style="background-image:url('https://playperformance.com/wp-content/uploads/2026/11/PP67115-1024x683.jpg')"><b>Available</b></div><div class="cb"><h3>2014 Holden VF SS Storm Ute</h3><p class="meta">104,648 km · Manual · Petrol V8</p><div class="lock"><span class="blur" aria-hidden="true">$00,000</span><span class="lk">🔒 Dealers only</span></div></div></a>
+        <a class="car" href="../#signup"><div class="im" style="background-image:url('https://playperformance.com/wp-content/uploads/2026/11/PP67036-1024x683.jpg')"><b>Available</b></div><div class="cb"><h3>2012 HSV Clubsport R8</h3><p class="meta">173,408 km · Automatic · Petrol V8</p><div class="lock"><span class="blur" aria-hidden="true">$00,000</span><span class="lk">🔒 Dealers only</span></div></div></a>
+        <a class="car" href="../#signup"><div class="im" style="background-image:url('https://playperformance.com/wp-content/uploads/2026/11/PP67093-1024x683.jpg')"><b>Available</b></div><div class="cb"><h3>2021 Mercedes-Benz C200</h3><p class="meta">59,203 km · Automatic · Petrol</p><div class="lock"><span class="blur" aria-hidden="true">$00,000</span><span class="lk">🔒 Dealers only</span></div></div></a>
+        <a class="car" href="../#signup"><div class="im" style="background-image:url('https://playperformance.com/wp-content/uploads/2026/11/PP67064-1024x683.jpg')"><b>Available</b></div><div class="cb"><h3>2018 Mercedes-AMG CLA45</h3><p class="meta">160,715 km · Automatic · Petrol</p><div class="lock"><span class="blur" aria-hidden="true">$00,000</span><span class="lk">🔒 Dealers only</span></div></div></a>
+        <a class="car" href="../#signup"><div class="im" style="background-image:url('https://playperformance.com/wp-content/uploads/2026/11/PP67079-1024x683.jpg')"><b>Available</b></div><div class="cb"><h3>2021 Nissan Navara ST-X</h3><p class="meta">121,350 km · Automatic · Diesel</p><div class="lock"><span class="blur" aria-hidden="true">$00,000</span><span class="lk">🔒 Dealers only</span></div></div></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="rule" id="how">
+    <div class="wrap">
+      <div class="rv">
+        <p class="eyebrow">How it works</p>
+        <h2 class="hx">Four steps. <span class="red">No haggling.</span></h2>
+        <p class="sub">Built for your phone, so you can check stock and buy from the yard, the auction floor or the couch.</p>
+      </div>
+      <div class="steps">
+        <div class="step rv"><span class="ic">📝</span><h3>Request access</h3><p>Tell us your name, dealership and dealer licence number. It takes about a minute.</p></div>
+        <div class="step rv"><span class="ic">✅</span><h3>Confirm and sign in</h3><p>Tap the link we email you to confirm your address, then sign in with your email and password.</p></div>
+        <div class="step rv"><span class="ic">⚡</span><h3>Browse and buy now</h3><p>Sort by price, year or kms, save the ones you like and check photos, specs and condition. When it stacks up, hit Buy now. First in wins.</p></div>
+        <div class="step rv"><span class="ic">🚚</span><h3>Track it home</h3><p>Choose delivery or pickup. Follow every stage, from payment confirmed to delivered, and message our team any time.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRACKING + CHAT -->
+  <section class="rule">
+    <div class="wrap split">
+      <div class="rv">
+        <p class="eyebrow">After you buy</p>
+        <h2 class="hx">Know where your car is. <span class="red">Always.</span></h2>
+        <p class="sub">No chasing anyone for updates. Every car you buy gets its own tracking page, and there's a direct line to our team built in.</p>
+        <ul class="ticks">
+          <li>Live stages from purchase to delivered or collected</li>
+          <li>Carrier, ETA and reference shown when it's on the truck</li>
+          <li>Chat with Play Performance about any car, right in the app</li>
+          <li>Ask a question straight from a listing before you buy</li>
+        </ul>
+      </div>
+      <div class="track rv" aria-label="Example tracking page">
+        <h4>2021 Ford Ranger Wildtrak</h4>
+        <p class="tm">Delivery to your dealership · Example</p>
+        <ul class="tl">
+          <li class="done">Purchased<small>Locked in. You were first.</small></li>
+          <li class="done">Payment confirmed</li>
+          <li class="done">Being prepared<small>Detailed and ready to load</small></li>
+          <li class="now">On the way<small>With the carrier · ETA Thursday</small></li>
+          <li>Delivered</li>
+        </ul>
+        <div class="chatb">
+          <div class="bub me">Can you send the service history?</div>
+          <div class="bub them">Sure, uploading it now 👍</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENEFITS -->
+  <section class="rule" id="benefits">
+    <div class="wrap">
+      <div class="rv">
+        <p class="eyebrow">Why dealers use it</p>
+        <h2 class="hx">Better stock. <span class="red">Faster. Clearer.</span></h2>
+      </div>
+      <div class="bens">
+        <div class="ben rv"><div class="bi">👀</div><h3>First look at our stock</h3><p>Trade cars go to the portal before anywhere else, so you see them before the market does.</p></div>
+        <div class="ben rv"><div class="bi">💲</div><h3>One clear price</h3><p>A set wholesale price on every car. No bidding, no counter-offers and no time wasted negotiating.</p></div>
+        <div class="ben rv"><div class="bi">📈</div><h3>Margin shown upfront</h3><p>Projected retail and your margin are on every listing, so you can tell in seconds whether a car works for your yard.</p></div>
+        <div class="ben rv"><div class="bi">⚡</div><h3>Decide on the spot</h3><p>Buy now locks the car to you instantly. If someone beat you to it, you'll know straight away.</p></div>
+        <div class="ben rv"><div class="bi">📸</div><h3>Full condition details</h3><p>Real photos, specs, highlights and condition notes for every car, so you're not buying blind.</p></div>
+        <div class="ben rv"><div class="bi">📱</div><h3>Made for your phone</h3><p>Fast on mobile, works anywhere, and you can save it to your home screen like an app.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="rule" id="faq">
+    <div class="wrap">
+      <div class="rv">
+        <p class="eyebrow">Questions</p>
+        <h2 class="hx">Good to <span class="red">know.</span></h2>
+      </div>
+      <div class="faq rv">
+        <details><summary>Who can join?</summary><p>The Acquisition Centre is for licensed motor dealers only. We ask for your dealership name and dealer licence number when you request access.</p></details>
+        <details><summary>How are prices set?</summary><p>Every car has one fixed wholesale price set by Play Performance. There are no offers or auctions; the price you see is the price you pay.</p></details>
+        <details><summary>What does "projected retail" mean?</summary><p>It's the wholesale price plus 25%, shown as a guide to what the car could retail for and the margin that leaves you. It's an estimate, not a guarantee, so always run your own numbers.</p></details>
+        <details><summary>What happens if two dealers hit Buy now at once?</summary><p>The first purchase to reach us wins and the car is locked to that dealer instantly. Everyone else sees it marked as sold.</p></details>
+        <details><summary>What happens after I buy?</summary><p>Our team contacts you to confirm payment and arrange delivery or pickup. You can follow each stage on your car's tracking page and message us any time from the Chat tab.</p></details>
+        <details><summary>I forgot my password.</summary><p>Tap "Forgot your password?" on the sign-in screen and we'll email you a reset link.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final rule">
+    <div class="bgimg" aria-hidden="true"></div>
+    <div class="wrap rv">
+      <div class="kick" style="justify-content:center;margin-bottom:16px"><span class="dot"></span> Stock moves fast</div>
+      <h2 class="hx">Get in before <span class="red">the next dealer does.</span></h2>
+      <p class="sub">Request access now. It takes a minute, and you'll see every car we have for the trade.</p>
+      <div class="ctas">
+        <a class="btn btn-red" href="../#signup">Request dealer access <span aria-hidden="true">→</span></a>
+        <a class="btn btn-ghost" href="tel:1300088808">Call 1300 08 88 08</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="yr">2026</span> Play Performance · Dealer Acquisition Centre</span>
+    <span><a href="../#signin">Dealer sign in</a> &nbsp;·&nbsp; <a href="tel:1300088808">1300 08 88 08</a> &nbsp;·&nbsp; <a href="https://playperformance.com" target="_blank" rel="noopener">playperformance.com</a></span>
+  </div>
+</footer>
+
+<div class="mcta" id="mcta">
+  <a class="btn btn-ghost" href="../#signin">Sign in</a>
+  <a class="btn btn-red" href="../#signup">Request access →</a>
+</div>
+
+<script>
+document.getElementById('yr').textContent=new Date().getFullYear();
+// hero slideshow
+(()=>{const s=[...document.querySelectorAll('.slide')];let k=0;if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;setInterval(()=>{s[k].classList.remove('on');k=(k+1)%s.length;s[k].classList.add('on')},5000)})();
+// nav + sticky cta
+const nav=document.getElementById('nav'),mc=document.getElementById('mcta');
+const onS=()=>{const y=scrollY;nav.classList.toggle('solid',y>40);mc.classList.toggle('show',y>innerHeight*.6)};
+addEventListener('scroll',onS,{passive:true});onS();
+// reveal on scroll
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

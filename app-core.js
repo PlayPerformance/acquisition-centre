@@ -105,6 +105,7 @@ async function boot(){
   try{const [db,user]=await Promise.all([window.claude?.use('db'),window.claude?.use('user')]);S.db=db;S.user=user}catch(e){}
   if(!S.db){clearTimeout(timer);S.noDb=true;render();return}
   S.recovery=!!window.__recovery;if(S.recovery)S.gateMode='newpw';
+  {const h=route();if(h==='signup'||h==='signin'){if(!S.recovery)S.gateMode=h==='signup'?'up':'in';history.replaceState(null,'',location.pathname+location.search)}}
   try{if(S.user){S.realAdmin=!!(await S.user.canEdit());S.uid=await S.user.id();S.me=await S.user.me()}}catch(e){}
   if(route()==='customer'){LS.set('pp-preview',1);history.replaceState(null,'',location.pathname+location.search)}
   S.isAdmin=S.realAdmin&&!LS.get('pp-preview');
@@ -431,6 +432,7 @@ function gate(){
         <button class="btn btn-red btn-block g-go" type="submit" id="gGo">${{in:'Sign in',up:'Request access',reset:'Send reset link',newpw:'Save password'}[m]} <span aria-hidden="true">→</span></button>
       </form>
       <p class="gswitch">${m==='in'?`New dealer? <a href="#" data-gm="up">Request access</a>`:m==='newpw'?'':`<a href="#" data-gm="in">Back to sign in</a>`}</p>
+      <p class="gswitch" style="margin-top:6px"><a href="join/">What is the Acquisition Centre? →</a></p>
       <p class="gfoot">Commercial in confidence. © Play Performance ${new Date().getFullYear()} · ${PHONE}</p>
     </div>
   </div>`;
