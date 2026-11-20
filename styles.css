@@ -96,6 +96,13 @@ textarea.inp{min-height:90px}
 .vcard .t2{font-size:13px;color:var(--muted);margin-top:3px}
 .price{font-family:var(--head);font-stretch:125%;font-weight:800;color:#fff;white-space:nowrap}
 .vcard .price{font-size:20px}
+.plbl{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;font-weight:700;margin-bottom:1px}
+.psub{font-size:12.5px;color:#b9c1c8;line-height:1.4}
+.psub b{color:#fff;font-weight:700}
+.psub .grn,.grn{color:var(--green)!important}
+.card-psub{margin-top:10px;padding-top:10px;border-top:1px dashed #2a2a2a}
+.psub.big{font-size:14px;margin-top:4px}
+.buybar .rt{display:block;color:#b9c1c8;font-size:11.5px;text-transform:none;letter-spacing:0;font-weight:600;margin-top:1px}
 .facts{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 .facts span{font-size:12.5px;background:#1b1b1b;border:1px solid #282828;border-radius:6px;padding:4px 8px;color:#cfd6db}
 .vcard.is-sold{opacity:.55}

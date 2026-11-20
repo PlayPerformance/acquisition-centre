@@ -17,7 +17,7 @@ const FIELDS={
 const SECT={overview:'Overview',condition:'Condition',engine:'Engine',misc:'Misc'};
 const ALL=Object.values(FIELDS).flat();
 const BASICS=['year','make','model','badge','series','transmission','bodyType','fuelType','colour','rego','regoState'];
-const SORTS=[['new','Newest listed'],['plow','Price: low to high'],['phigh','Price: high to low'],['km','Lowest km'],['year','Newest year']];
+const SORTS=[['new','Newest listed'],['plow','Wholesale: low to high'],['phigh','Wholesale: high to low'],['km','Lowest km'],['year','Newest year']];
 const STEP_NAMES=['Photos','Price & basics','Details','Review'];
 const STAGES=[
   {k:'purchased',label:'Purchased',desc:'Your car is secured and off the market.'},
@@ -50,6 +50,10 @@ const fTime=ms=>{if(!ms)return'';const d=new Date(ms);return fDate(ms)+', '+d.to
 const ago=ms=>{if(!ms)return'';const s=(Date.now()-ms)/1000;if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago'};
 const newId=()=>'v'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const img=id=>/^(https?:|\/|stock\/)/.test(id)?id:'stock/'+id;
+const RETAIL_MARKUP=1.25;
+const retail=v=>Number(v.price)>0?Math.round(Number(v.price)*RETAIL_MARKUP):0;
+const margin=v=>retail(v)-(Number(v.price)||0);
+const priceSub=(v,cls='psub')=>Number(v.price)>0?`<div class="${cls}">Projected retail <b>${money(retail(v))}</b> · margin <b class="grn">+${money(margin(v))}</b></div>`:'';
 const vName=v=>[v.year,v.make,v.model].filter(Boolean).join(' ')||'Untitled vehicle';
 const vSub=v=>[v.badge,v.series].filter(Boolean).join(' · ');
 const inits=n=>(n||'').split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('')||'•';
@@ -212,7 +216,7 @@ function vcard(v){
     <div class="ph">${ph.length?`<img src="${img(ph[0])}" loading="lazy" alt="">`:'<div class="np">Photos coming soon</div>'}${tag}
       <button class="heart ${sv?'on':''}" data-save="${v.id}" aria-label="Save">${sv?I.heartF:I.heart}</button>
       ${ph.length>1?`<span class="pcount">1/${ph.length}</span>`:''}</div>
-    <div class="bd"><div class="row1"><div style="min-width:0"><div class="t1">${esc(vName(v))}</div>${vSub(v)?`<div class="t2">${esc(vSub(v))}</div>`:''}</div><div class="price">${money(v.price)||'POA'}</div></div>
+    <div class="bd"><div class="row1"><div style="min-width:0"><div class="t1">${esc(vName(v))}</div>${vSub(v)?`<div class="t2">${esc(vSub(v))}</div>`:''}</div><div style="text-align:right;flex:none"><div class="plbl">Wholesale</div><div class="price">${money(v.price)||'POA'}</div></div></div>${priceSub(v,'psub card-psub')}
       <div class="facts">${[km(v.odometer),v.transmission,v.fuelType,v.bodyType].filter(Boolean).map(f=>`<span>${esc(f)}</span>`).join('')}</div></div></div>`;
 }
 function listPage(which){
@@ -221,7 +225,7 @@ function listPage(which){
   const bodies=[...new Set(avail.map(v=>v.bodyType).filter(Boolean))].sort();
   const r=rows(which);
   const head=which==='saved'?`<h1 class="page-h h-x">Saved <span class="red">cars</span></h1><p class="page-sub">Your shortlist. Tap ♡ on any car to add it.</p>`
-    :`<h1 class="page-h h-x">Available <span class="red">cars</span></h1><p class="page-sub">Set prices. First to hit Buy now gets the car.</p>`;
+    :`<h1 class="page-h h-x">Available <span class="red">cars</span></h1><p class="page-sub">Wholesale prices with projected retail (+25%). First to hit Buy now gets the car.</p>`;
   const tools=which==='all'?`<div class="search">${I.search}<input id="q" class="inp" type="search" placeholder="Search make, model, colour…" value="${esc(S.q)}" autocomplete="off" enterkeyhint="search"></div>
     ${makes.length>1||bodies.length>1?`<div class="chips"><button class="${!S.make&&!S.body?'on':''}" data-f="all">All</button>${makes.map(m=>`<button class="${S.make===m?'on':''}" data-f="make:${esc(m)}">${esc(m)}</button>`).join('')}${bodies.map(b=>`<button class="${S.body===b?'on':''}" data-f="body:${esc(b)}">${esc(b)}</button>`).join('')}</div>`:''}
     <div class="resline"><span>${S.loaded?`${r.length} ${r.length===1?'car':'cars'}`:''}</span><button data-act="sort">${I.sort} ${esc(SORTS.find(s=>s[0]===S.sort)?.[1]||'Sort')}</button></div>`:'';
@@ -252,8 +256,8 @@ function vehiclePage(id){
   else if(st==='draft')status=`<div class="banner">Hidden from buyers (admin preview).</div>`;
   const buyBtn=`<button class="btn btn-red btn-block" data-act="buy" data-id="${v.id}" ${v.price?'':'disabled'}>Buy now</button>`;
   const actions=`<div class="actrow">${true?`<button class="btn btn-line" data-save="${v.id}">${sv?I.heartF.replace('<svg','<svg width="20" height="20" style="color:var(--red)"'):I.heart.replace('<svg','<svg width="20" height="20"')} ${sv?'Saved':'Save'}</button>`:''}<button class="btn btn-line" data-act="share" data-id="${v.id}">${I.share.replace('<svg','<svg width="20" height="20"')} Share</button></div>`;
-  const buybox=`<div class="card buybox">${st==='available'?`<div class="pl">Buy now price</div><span class="price">${money(v.price)||'POA'}</span>${buyBtn}<p class="note" style="margin:12px 0 0">You'll confirm on the next screen. We then call you to arrange payment and pickup or delivery.</p>`:st==='mine'?'<b class="h-x">Yours</b>':'<b class="h-x">Sold</b>'}${actions}</div>`;
-  const bar=st==='available'?`<div class="buybar"><div class="p"><small>Buy now</small><span class="price">${money(v.price)||'POA'}</span></div><button class="btn btn-red" data-act="buy" data-id="${v.id}" ${v.price?'':'disabled'}>Buy now</button></div>`:'';
+  const buybox=`<div class="card buybox">${st==='available'?`<div class="pl">Wholesale price</div><span class="price" style="margin-bottom:6px">${money(v.price)||'POA'}</span>${priceSub(v,'psub big')}<div style="height:14px"></div>${buyBtn}<p class="note" style="margin:12px 0 0">You'll confirm on the next screen. We then call you to arrange payment and pickup or delivery.</p>`:st==='mine'?'<b class="h-x">Yours</b>':'<b class="h-x">Sold</b>'}${actions}</div>`;
+  const bar=st==='available'?`<div class="buybar"><div class="p"><small>Wholesale</small><span class="price">${money(v.price)||'POA'}</span>${Number(v.price)>0?`<small class="rt">Retail ${money(retail(v))}</small>`:''}</div><button class="btn btn-red" data-act="buy" data-id="${v.id}" ${v.price?'':'disabled'}>Buy now</button></div>`:'';
   return `<div class="vgrid"><div>
     <div class="vhero">${galleryHtml(v)}
       <button class="back-fab" data-act="back" aria-label="Back">←</button>
@@ -261,7 +265,7 @@ function vehiclePage(id){
       ${ph.length>1?'<button class="garr l" data-act="gprev">‹</button><button class="garr r" data-act="gnext">›</button>':''}</div>
     ${ph.length>1?`<div class="thumbs" id="thumbs">${ph.map((p,i)=>`<img src="${img(p)}" data-gi="${i}" class="${i?'':'on'}" loading="lazy" alt="">`).join('')}</div>`:''}
     <div class="vhead"><h1 class="h-x">${esc(vName(v))}</h1><div class="sub">${esc([vSub(v),v.colour].filter(Boolean).join(' · '))}</div>
-      ${st==='available'?`<div class="pl">Buy now price</div><span class="price">${money(v.price)||'POA'}</span>`:''}</div>
+      ${st==='available'?`<div class="pl">Wholesale price</div><span class="price">${money(v.price)||'POA'}</span>${priceSub(v,'psub big')}`:''}</div>
     ${status}
     ${S.isAdmin?`<button class="btn btn-line btn-sm" data-go="admin-v-${v.id}" style="margin:6px 0 4px">Open in admin</button>`:''}
     <div class="keyspecs">
@@ -284,7 +288,7 @@ async function buyNow(id){
   if(saleState(v)!=='available'){toast('This car is no longer available.');return}
   const ph=(v.photos||[])[0];
   const res=await sheet(`<h3 class="h-x">Confirm <span class="red">purchase</span></h3>
-    <div class="car">${ph?`<img src="${img(ph)}" alt="">`:''}<div><b>${esc(vName(v))}</b><span class="price">${money(v.price)}</span></div></div>
+    <div class="car">${ph?`<img src="${img(ph)}" alt="">`:''}<div><b>${esc(vName(v))}</b><span class="price">${money(v.price)}</span><div class="psub" style="margin-top:2px">Wholesale · projected retail ${money(retail(v))}</div></div></div>
     <div class="fg"><span class="lbl">Pickup or delivery?</span><div class="opt"><label><input type="radio" name="del" value="Pickup" checked><span>Pickup</span></label><label><input type="radio" name="del" value="Delivery"><span>Delivery</span></label></div></div>
     <div class="fg" id="locW" style="display:none"><label class="lbl" for="bLoc">Deliver to (suburb, state)</label><input id="bLoc" class="inp" placeholder="e.g. Parramatta NSW" autocomplete="address-level2"></div>
     <div class="fg"><label class="lbl" for="bCom">Anything we should know? <span class="muted" style="font-weight:400">(optional)</span></label><textarea id="bCom" class="inp" rows="2" placeholder="Best time to call, finance, trade-in…"></textarea></div>
@@ -628,7 +632,7 @@ function wizard(id){
   if(st===2)body=`<h1 class="page-h h-x">Price <span class="red">& basics</span></h1><p class="page-sub">The essentials buyers see first.</p>
     <datalist id="makes">${makes.map(m=>`<option value="${esc(m)}">`).join('')}</datalist>
     <div class="form1">
-      <div><label class="lbl" for="f_price">Buy now price ($)<span class="req">*</span></label><input id="f_price" class="inp" data-d="price" type="number" inputmode="numeric" placeholder="e.g. 42000" value="${esc(d.price)}" style="font-size:22px;font-weight:700"></div>
+      <div><label class="lbl" for="f_price">Wholesale price ($)<span class="req">*</span></label><input id="f_price" class="inp" data-d="price" type="number" inputmode="numeric" placeholder="e.g. 42000" value="${esc(d.price)}" style="font-size:22px;font-weight:700"><div class="psub" id="retailPrev" style="margin-top:6px">${Number(d.price)>0?`Projected retail <b>${money(retail(d))}</b> · margin <b class="grn">+${money(margin(d))}</b>`:"Buyers see projected retail at +25%."}</div></div>
       <div class="two">${input(fld('year'),1)}<div><label class="lbl" for="f_odometer">Odometer (km)</label><input id="f_odometer" class="inp" data-d="odometer" type="number" inputmode="numeric" value="${esc(d.odometer)}"></div></div>
       <div class="two">${input(fld('make'),1)}${input(fld('model'),1)}</div>
       <div class="two">${input(fld('badge'))}${input(fld('series'))}</div>
@@ -771,7 +775,7 @@ document.addEventListener('input',e=>{const t=e.target;
   else if(t.id==='aq'){S.aQ=t.value;render(true)}
   else if(t.id==='cq'){S.cQ=t.value;render(true)}
   else if(t.id==='chatTa'){S.chatDraft=t.value;t.style.height='auto';t.style.height=Math.min(140,t.scrollHeight)+'px'}
-  else if(t.dataset.d&&S.draft){S.draft[t.dataset.d]=t.value;persist();const e2=document.getElementById('wzErr');if(e2)e2.textContent=''}});
+  else if(t.dataset.d&&S.draft){S.draft[t.dataset.d]=t.value;persist();if(t.dataset.d==='price'){const rp=document.getElementById('retailPrev');if(rp)rp.innerHTML=Number(t.value)>0?`Projected retail <b>${money(retail(S.draft))}</b> · margin <b class="grn">+${money(margin(S.draft))}</b>`:'Buyers see projected retail at +25%.'}const e2=document.getElementById('wzErr');if(e2)e2.textContent=''}});
 document.addEventListener('change',e=>{const t=e.target;
   if(t.id==='camIn'||t.id==='uplIn'){addFiles(t.files);t.value=''}
   else if(t.dataset.d&&S.draft){S.draft[t.dataset.d]=t.value;persist()}});
